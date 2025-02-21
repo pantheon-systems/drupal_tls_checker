@@ -1,0 +1,6 @@
+name: 'TLS Compatibility Checker'
+type: module
+description: 'Scans custom Drupal modules and themes for outgoing HTTP requests and checks TLS 1.2/1.3 compatibility.'
+package: 'Custom'
+core_version_requirement: ^10 || ^11
+dependencies: []

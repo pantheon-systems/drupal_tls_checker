@@ -1,0 +1,7 @@
+tls_checker.settings:
+  scan_directories:
+    - 'modules/custom'
+    - 'themes/custom'
+  excluded_urls: []
+  auto_scan_enabled: false
+  scan_batch_size: 10

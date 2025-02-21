@@ -1,0 +1,36 @@
+tls_checker.admin:
+  path: '/admin/config/development/tls-checker'
+  defaults:
+    _form: '\Drupal\tls_checker\Form\TLSCheckerAdminForm'
+    _title: 'TLS Compatibility Checker'
+  requirements:
+    _permission: 'run tls checker scan'
+  options:
+    _admin_route: TRUE
+
+tls_checker.process_batch:
+  path: '/tls_checker/process_batch'
+  defaults:
+    _controller: '\Drupal\tls_checker\Controller\TLSCheckerBatchController::processBatch'
+    _format: 'json'
+  requirements:
+    _permission: 'run tls checker scan'
+  methods: ['POST']
+
+tls_checker.get_urls:
+  path: '/admin/config/development/tls-checker/get-urls'
+  defaults:
+    _controller: '\Drupal\tls_checker\Controller\TLSCheckerBatchController::getUrlsToScan'
+    _format: 'json'
+  requirements:
+    _permission: 'run tls checker scan'
+  methods: ['GET']
+
+tls_checker.reset_scan:
+  path: '/admin/config/tls_checker/reset-scan'
+  defaults:
+    _controller: '\Drupal\tls_checker\Controller\ScanController::resetScan'
+    _format: 'json'
+  requirements:
+    _permission: 'administer site configuration'
+  methods: ['POST']

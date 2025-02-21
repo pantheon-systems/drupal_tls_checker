@@ -1,0 +1,11 @@
+tls_checker:
+  version: 1.x
+  js:
+    js/tls_checker.js: {}
+  css:
+    theme:
+      css/tls_checker.css: {}
+  dependencies:
+    - core/drupal.ajax
+    - core/jquery
+    - core/once

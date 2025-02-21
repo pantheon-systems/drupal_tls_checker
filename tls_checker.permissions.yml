@@ -1,0 +1,18 @@
+# Permissions for TLS Checker Module
+
+# Permission to run TLS scans
+run tls checker scan:
+  title: 'Run TLS compatibility scan'
+  description: 'Allows users to scan the site for TLS 1.2/1.3 compatibility'
+  restrict access: true
+
+# Permission to view scan results
+view tls checker results:
+  title: 'View TLS scan results'
+  description: 'Allows users to see passing and failing TLS URLs'
+  
+# Permission to manage TLS settings
+manage tls checker settings:
+  title: 'Manage TLS Checker settings'
+  description: 'Allows users to configure TLS scanning options'
+  restrict access: true

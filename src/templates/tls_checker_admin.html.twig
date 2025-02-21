@@ -1,0 +1,39 @@
+{% extends "admin.html.twig" %}
+
+{% block content %}
+  <div class="tls-checker-admin">
+    <h1>{{ 'TLS Compatibility Scanner'|t }}</h1>
+
+    <p>{{ 'This tool scans your site’s custom code for outgoing HTTP requests and checks TLS 1.2/1.3 compatibility.'|t }}</p>
+
+    {# Display passing URLs #}
+    <div class="tls-results">
+      <h2>{{ 'Passing URLs'|t }}</h2>
+      {% if passing_urls is not empty %}
+        <pre class="card">{% for url in passing_urls %}{{ url }}&#10;{% endfor %}</pre>
+      {% else %}
+        <p>{{ 'No passing URLs detected.'|t }}</p>
+      {% endif %}
+    </div>
+
+    {# Display failing URLs #}
+    <div class="tls-results tls-failing">
+      <h2>{{ 'Failing URLs'|t }}</h2>
+      {% if failing_urls is not empty %}
+        <pre class="card">{% for url in failing_urls %}{{ url }}&#10;{% endfor %}</pre>
+      {% else %}
+        <p class="tls-passing">{{ 'No failing URLs detected.'|t }}</p>
+      {% endif %}
+    </div>
+
+    {# Scan button form #}
+    <div class="tls-scan">
+      <h2>{{ 'Run TLS Scan'|t }}</h2>
+      <p>{{ 'Click the button below to run a new TLS scan.'|t }}</p>
+
+      <form action="{{ path('tls_checker.run_scan') }}" method="post">
+        <input type="submit" class="button button--primary" value="{{ 'Run TLS Scan'|t }}">
+      </form>
+    </div>
+  </div>
+{% endblock %}

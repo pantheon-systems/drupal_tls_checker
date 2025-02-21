@@ -1,0 +1,6 @@
+services:
+  tls_checker.service:
+    class: 'Drupal\tls_checker\Service\TLSCheckerService'
+    arguments: ['@config.factory', '@logger.factory', '@http_client']
+    tags:
+      - { name: 'service' }
