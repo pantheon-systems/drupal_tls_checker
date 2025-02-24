@@ -245,7 +245,7 @@ class TLSCheckerService {
 				fclose($fp);
 				return true;
 			} else {
-				\Drupal::logger('tls_checker')->error("TLS check failed for @hostname. Error Code: @errno, Message: @message", [
+				\Drupal::logger('tls_checker')->debug("TLS check failed for @hostname. Error Code: @errno, Message: @message", [
 					'@hostname' => $hostname,
 					'@errno' => $errno,
 					'@message' => $errstr ?: "Unknown error",
