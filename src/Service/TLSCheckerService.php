@@ -208,12 +208,21 @@ class TLSCheckerService {
 	}
   
 	public function getScanResults() {
+		$connection = \Drupal::database();
+		$schema = $connection->schema();
+
+		if (!$schema->tableExists('tls_checker_results')) {
+			\Drupal::logger('tls_checker')->debug('Attempted to retrieve scan results, but the results table does not exist.');
+			return ['error' => 'No scan results available.'];
+		}
+
 		$passing = $this->getPassingUrls();
 		$failing = $this->getFailingUrls();
 
 		return [
 			'passing' => count($passing),
 			'failing' => count($failing),
+			'passing_urls' => $passing,
 			'failing_urls' => $failing,
 		];
 	}
