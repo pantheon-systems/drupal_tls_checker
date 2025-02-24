@@ -303,25 +303,45 @@ class TLSCheckerService {
 		}
 	}
 
-  /**
-   * Retrieves passing URLs.
-   *
-   * @return array
-   *   List of passing URLs.
-   */
-  public function getPassingUrls() {
-    return $this->configFactory->get('tls_checker.settings')->get('passing_urls') ?? [];
-  }
+	/**
+	 * Retrieves passing URLs.
+	 *
+	 * @return array
+	 *   List of passing URLs.
+	 */
+	public function getPassingUrls() {
+		$query = \Drupal::database()->select('tls_checker_results', 't')
+			->fields('t', ['url'])
+			->condition('status', 'passing')
+			->execute();
 
-  /**
-   * Retrieves failing URLs.
-   *
-   * @return array
-   *   List of failing URLs.
-   */
-  public function getFailingUrls() {
-    return $this->configFactory->get('tls_checker.settings')->get('failing_urls') ?? [];
-  }
+		$passing_urls = [];
+		foreach ($query as $record) {
+			$passing_urls[] = $record->url;
+		}
+
+		return $passing_urls;
+	}
+
+	/**
+	 * Retrieves failing URLs.
+	 *
+	 * @return array
+	 *   List of failing URLs.
+	 */
+	public function getFailingUrls() {
+		$query = \Drupal::database()->select('tls_checker_results', 't')
+			->fields('t', ['url'])
+			->condition('status', 'failing')
+			->execute();
+
+		$failing_urls = [];
+		foreach ($query as $record) {
+			$failing_urls[] = $record->url;
+		}
+
+		return $failing_urls;		
+	}
 
 	/**
 	 * Runs TLS checks on a list of URLs and categorizes them as passing or failing.
