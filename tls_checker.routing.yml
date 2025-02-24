@@ -18,7 +18,7 @@ tls_checker.process_batch:
   methods: ['POST']
 
 tls_checker.get_urls:
-  path: '/admin/config/development/tls-checker/get-urls'
+  path: '/tls_checker/get_urls'
   defaults:
     _controller: '\Drupal\tls_checker\Controller\TLSCheckerBatchController::getUrlsToScan'
     _format: 'json'
@@ -27,7 +27,7 @@ tls_checker.get_urls:
   methods: ['GET']
 
 tls_checker.reset_scan:
-  path: '/admin/config/tls_checker/reset-scan'
+  path: '/tls_checker/reset_data'
   defaults:
     _controller: '\Drupal\tls_checker\Controller\ScanController::resetScan'
     _format: 'json'
