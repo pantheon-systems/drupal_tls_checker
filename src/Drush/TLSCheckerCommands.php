@@ -6,7 +6,8 @@ use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Drupal\tls_checker\Service\TLSCheckerService;
 use Symfony\Component\Console\Helper\ProgressBar;
-use Symfony\Component\Console\Output\NullOutput;
+use Symfony\Component\Console\Helper\Table;
+use Symfony\Component\Console\Helper\TableStyle;
 
 /**
  * Drush commands for TLS Checker.
@@ -46,10 +47,10 @@ final class TLSCheckerCommands extends DrushCommands {
 		$this->output()->writeln("🔍 Collecting URLs from codebase...");
 
 		// Get directories from the --directory flag, if provided.
-		$directories = !empty($options['directory']) ? array_map('trim', explode(',', $options['directory'])) : false;
-
-		if ($directories) {
-			$directories_to_check = $options['directory'];
+		$directories = !empty($options['directory']) ? array_map('trim', explode(',', $options['directory'])) : ['modules', 'themes'];
+		$directories_to_check = $options['directory'];
+		
+		if (!empty($directories_to_check)) {
 			$this->output()->writeln("📂 Looking for URLs in $directories_to_check...");
 		}
 
@@ -57,7 +58,7 @@ final class TLSCheckerCommands extends DrushCommands {
 		$urls = $this->tlsCheckerService->extractUrlsFromCodebase($directories);
 
 		if (empty($urls)) {
-			$this->output()->writeln("⚠️ No URLs found in specified directories.");
+			$this->output()->writeln("⚠️  No URLs found in specified directories.");
 			return;
 		}
 
@@ -128,6 +129,75 @@ final class TLSCheckerCommands extends DrushCommands {
 			$this->output()->writeln("✅ TLS scan data reset.");
 		} catch (\Exception $e) {
 			$this->output()->writeln("❌ An error occurred resetting scan data: " . $e->getMessage());
+		}
+	}
+
+	/**
+	 * Generate a TLS scan report
+	 * 
+	 * @command tls-checker:report
+	 * @aliases tls-report
+	 * @option format The output format (table, json, csv, yaml).
+	 * @usage drush tls-checker:report
+	 *   Generates a report of the TLS scan results. (Defaults to table format.)
+	 * @usage drush tls-checker:report --format=json
+	 *   Generates a report of the TLS scan results in JSON format.
+	 * @usage drush tls-checker:report --format=csv
+	 *  Generates a report of the TLS scan results in CSV format.
+	 */
+	#[CLI\Command(name: 'tls-checker:report', aliases: ['tls-report'])]
+	#[CLI\Option(name: 'format', description: 'The output format (table, json, csv, yaml)')]
+	public function report(array $options = ['format' => 'table']) {
+		$format = strtolower($options['format']);
+		$this->output()->writeln("📊 Generating TLS scan report...");
+		$data = $this->tlsCheckerService->getScanResults();
+
+		if (empty($data['passing']) && empty($data['failing'])) {
+			$this->output()->writeln("⚠️  No scan data found.");
+			return;
+		}
+
+		// Prepare results.
+		$reportData = [];
+		foreach($data['passing_urls'] as $url) {
+			$reportData[] = ['URL' => $url, 'Status' => '✅ Passing'];
+		}
+		foreach($data['failing_urls'] as $url) {
+			$reportData[] = ['URL' => $url, 'Status' => '❌ Failing'];
+		}
+
+		switch($format) {
+			case 'json':
+				$this->output()->writeln(json_encode($reportData, JSON_PRETTY_PRINT));
+				break;
+
+			case 'csv':
+				$fp = fopen('php://output', 'w');
+				fputcsv($fp, ['URL', 'Status']);
+				foreach ($reportData as $row) {
+					fputcsv($fp, $row);
+				}
+				fclose($fp);
+				break;
+
+			case 'yaml':
+				$this->output()->writeln(yaml_emit($reportData));
+				break;
+
+			case 'table':
+			default:
+				$table = new Table($this->output());
+				$table->setHeaders(['URL', 'Status']);
+				foreach ($reportData as $row) {
+					$table->addRow([$row['URL'], $row['Status']]);
+				}
+
+				// Style the table.
+				$style = new TableStyle();
+				$style->setPadType(STR_PAD_BOTH);
+				$table->setStyle($style);
+				$table->render();
+				break;
 		}
 	}
 }
