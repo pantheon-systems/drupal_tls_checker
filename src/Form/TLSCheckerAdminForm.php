@@ -77,16 +77,45 @@ class TLSCheckerAdminForm extends FormBase {
     }
 
 	$form['#attached']['library'][] = 'tls_checker/tls_checker';
-
     $form['description'] = [
-      '#markup' => $this->t('Scan your site’s modules and themes for outgoing HTTP requests and check TLS 1.2/1.3 compatibility.'),
-    ];
+		'#markup' => $this->t('<div class="tls-checker-description">Scan your site’s modules and themes for outgoing HTTP requests and check TLS 1.2/1.3 compatibility.</div>'),
+	  ];
+
+	// Get information from the database.
+	$connection = \Drupal::database();
+	$schema = $connection->schema();
+	$table_exists = false;
+	if ($schema->tableExists('tls_checker_results')) {
+		$query = $connection->select('tls_checker_results', 'tcr')
+			->fields('tcr', ['url'])
+			->condition('status', 'failing')
+			->execute();
+		$table_exists = true;
+	}
+	$failing_urls = $table_exists ? $query->fetchCol() : [];
+
+	// Render failing results.
+	if (!empty($failing_urls)) {
+		$form['failing_urls'] = [
+			'#type' => 'details',
+			'#title' => $this->t('Failing URLs'),
+			'#open' => TRUE,
+			'list' => [
+				'#theme' => 'item_list',
+				'#items' => array_map('htmlspecialchars', $failing_urls),
+			],
+		];
+
+		$form['description'] = [
+			'#markup' => $this->t('The following URLs failed TLS 1.2/1.3 compatibility. Use the TLS Scan button below to re-run the scan or the Reset Scan Data button to clear the results.'),
+		];
+	}
 
 	$form['progress'] = [
 		'#type' => 'markup',
 		'#markup' => '<div id="tls-scan-progress" class="tls-progress-bar">
 						<div class="tls-progress"></div>
-						<span id="tls-progress-text">0%</span>
+						<span id="tls-progress-text" style="display:inline!important">0%</span>
 					  </div>',
 	  ];		
 
