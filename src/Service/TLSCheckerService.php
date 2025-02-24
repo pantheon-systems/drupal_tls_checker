@@ -50,6 +50,7 @@ class TLSCheckerService {
 
 		// Remove any URLs that are in the passing urls list.
 		$passing_urls = $this->getPassingUrls();
+		$failing_urls = $this->getFailingUrls();
 		$urls = array_diff($urls, $passing_urls);
 
 		$results = $this->scanUrls($urls);
@@ -79,7 +80,7 @@ class TLSCheckerService {
 					}
 	
 					// Avoid duplicates.
-					if (in_array($clean_url, $processed_urls, true)) {
+					if (in_array($clean_url, array_unique(array_merge($processed_urls, $passing_urls, $failing_urls)), true) ) {
 						continue;
 					}
 
@@ -91,7 +92,10 @@ class TLSCheckerService {
 							'@url' => $clean_url,
 						]
 					);
-	
+
+					// Filter out any duplicates.
+					$processed_urls = array_unique($processed_urls);
+
 					$connection->upsert('tls_checker_results')
 						->key('url')
 						->fields([
@@ -279,7 +283,7 @@ class TLSCheckerService {
 			if ($schema->tableExists('tls_checker_results')) {
 				\Drupal::logger('tls_checker')->error('Failed to drop the TLS scan results table.');
 			} else {
-				\Drupal::logger('tls_checker')->notice('TLS scan data has been fully reset.');
+				\Drupal::logger('tls_checker')->debug('TLS scan data has been fully reset.');
 			}
 		} else {
 			\Drupal::logger('tls_checker')->warning('Attempted to reset scan data, but the results table does not exist.');
@@ -313,7 +317,7 @@ class TLSCheckerService {
 				],
 				'primary key' => ['id'],
 			]);
-			\Drupal::logger('tls_checker')->notice('Created missing tls_checker_results table.');
+			\Drupal::logger('tls_checker')->debug('Created missing tls_checker_results table.');
 		}
 	}
 
