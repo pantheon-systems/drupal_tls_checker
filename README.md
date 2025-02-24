@@ -62,6 +62,31 @@ Or, in a Pantheon environment using Terminus:
 terminus drush -- <site>.<env> tls-checker:scan
 ```
 
+### `report`
+
+Returns a full report of checked URLs and whether they passed or failed the TLS check. Supports multiple formats (table, JSON, CSV, YAML).
+
+#### Examples
+
+```bash
+drush tls-checker:report
+```
+
+```bash
+drush tls-checker:report --format=json | jq
+```
+
+```bash
+drush tls-checker:report --format=csv
+```
+
+Or, in a Pantheon environment using Terminus:
+
+```bash
+terminus drush -- <site>.<env> tls-checker:report
+```
+
+
 ### `reset`
 
 Resets the stored passing and failing URLs so the next scan will re-check all discovered URLs.
