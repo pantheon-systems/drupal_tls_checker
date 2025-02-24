@@ -258,9 +258,15 @@ class TLSCheckerService {
 		$schema = $connection->schema();
 	
 		if ($schema->tableExists('tls_checker_results')) {
-			$schema->dropTable('tls_checker_results');
-			$this->ensureResultsTableExists();
-			\Drupal::logger('tls_checker')->notice('TLS scan data has been fully reset.');
+			// Explicitly drop the table using a raw query
+			$connection->query("DROP TABLE IF EXISTS {tls_checker_results}");
+	
+			// Verify deletion
+			if ($schema->tableExists('tls_checker_results')) {
+				\Drupal::logger('tls_checker')->error('Failed to drop the TLS scan results table.');
+			} else {
+				\Drupal::logger('tls_checker')->notice('TLS scan data has been fully reset.');
+			}
 		} else {
 			\Drupal::logger('tls_checker')->warning('Attempted to reset scan data, but the results table does not exist.');
 		}
