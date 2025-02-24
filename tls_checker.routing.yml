@@ -26,6 +26,15 @@ tls_checker.get_urls:
     _permission: 'run tls checker scan'
   methods: ['GET']
 
+tls_checker.get_scan_results:
+  path: '/tls_checker/get_results'
+  defaults:
+    _controller: '\Drupal\tls_checker\Controller\TLSCheckerBatchController::getScanResults'
+    _format: 'json'
+  requirements:
+    _permission: 'run tls checker scan'
+  methods: ['GET']
+
 tls_checker.reset_scan:
   path: '/tls_checker/reset_data'
   defaults:
