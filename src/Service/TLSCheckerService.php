@@ -108,6 +108,31 @@ class TLSCheckerService {
 			\Drupal::logger('tls_checker')->error('Error storing TLS scan results: ' . $e->getMessage());
 			return ['error' => 'Failed to store scan results.'];
 		}
+	}	
+
+	private function normalizeUrl(string $url) {
+		$parsed_url = parse_url($url);
+
+		if (!isset($parsed_url['host'])) {
+			\Drupal::logger('tls_checker')->warning('Invalid url: @url', ['@url' => $url]);
+			return null; // Invalid url.
+		}
+
+		$hostname = strtolower($parsed_url['host']);
+
+		if (!$hostname) {
+			\Drupal::logger('tls_checker')->warning('Invalid hostname extracted: @url', ['@url' => $url]);
+			return null;
+		}
+
+		$hostname = preg_replace('/^www\./', '', $hostname); // Remove 'www.'
+
+		// Keep non-standard ports (if present)
+		if (isset($parsed_url['port']) && !in_array($parsed_url['port'], [80, 443])) {
+			return "$hostname:{$parsed_url['port']}";
+		}
+	
+		return $hostname; // Default case, return clean hostname
 	}
 
 	/**
