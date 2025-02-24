@@ -59,15 +59,24 @@ class TLSCheckerBatchController extends ControllerBase {
 			return new JsonResponse(['error' => 'No URLs provided for scanning.'], 400);
 		}
 	
-		$results = $this->tlsCheckerService->scanAndStoreUrls($urls);
+		$this->tlsCheckerService->scanAndStoreUrls($urls);
 	
-		if (isset($results['error'])) {
-			return new JsonResponse(['error' => $results['error']], 500);
-		}
-	
-		return new JsonResponse($results);
+		return new JsonResponse([
+			'success' => true,
+			'processed' => count($urls),
+		]);
 	}
 	
+	public function getScanResults() {
+		$passing = $this->tlsCheckerService->getPassingUrls();
+		$failing = $this->tlsCheckerService->getFailingUrls();
+
+		return new JsonResponse([
+			'passing' => count($passing),
+			'failing' => count($failing),
+			'failing_urls' => $failing,
+		]);
+	}
 
 	/**
 	 * Returns a list of URLs for scanning.
