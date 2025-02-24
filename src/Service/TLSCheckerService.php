@@ -47,7 +47,11 @@ class TLSCheckerService {
 	 */
 	public function scanAndStoreUrls(array $urls) {
 		$this->ensureResultsTableExists();
-	
+
+		// Remove any URLs that are in the passing urls list.
+		$passing_urls = $this->getPassingUrls();
+		$urls = array_diff($urls, $passing_urls);
+
 		$results = $this->scanUrls($urls);
 		$connection = \Drupal::database();
 		$processed_urls = [];
@@ -140,8 +144,7 @@ class TLSCheckerService {
 	 *
 	 * @return array List of unique URLs found in the codebase.
 	 */
-	public function extractUrlsFromCodebase() {
-		$base_dirs = ['modules', 'themes'];
+	public function extractUrlsFromCodebase(array $base_dirs = ['modules', 'themes']) {
 		$urls = [];
 
 		foreach ($base_dirs as $dir) {
