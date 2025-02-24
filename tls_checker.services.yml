@@ -2,5 +2,13 @@ services:
   tls_checker.service:
     class: 'Drupal\tls_checker\Service\TLSCheckerService'
     arguments: ['@config.factory', '@logger.factory', '@http_client']
+    public: true
     tags:
       - { name: 'service' }
+
+  tls_checker.drush_commands:
+    class: 'Drupal\tls_checker\Drush\TLSCheckerCommands'
+    public: true
+    arguments: ['@tls_checker.service']
+    tags:
+      - { name: 'drush.command' }
