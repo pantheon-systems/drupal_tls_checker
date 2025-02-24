@@ -33,19 +33,31 @@ final class TLSCheckerCommands extends DrushCommands {
 	 *
 	 * @command tls-checker:scan
 	 * @aliases tls-scan
+	 * @option directory Comma-separated list of directories to scan instead of defaults.
 	 * @usage drush tls-checker:scan
 	 *   Runs a TLS 1.2/1.3 compatibility scan.
+	 * @usage drush tls-checker:scan --directory=modules/custom,themes/custom
+	 *   Runs a TLS 1.2/1.3 compatibility scan using the specified directories.
 	 */
 	#[CLI\Command(name: 'tls-checker:scan', aliases: ['tls-scan'])]
-	public function scan() {
+	#[CLI\Option(name: 'directory', description: 'Comma-separated list of directories to scan')]
+	public function scan(array $options = ['directory' => '']) {
 		$this->logger->info('Starting TLS scan...');
 		$this->output()->writeln("🔍 Collecting URLs from codebase...");
 
+		// Get directories from the --directory flag, if provided.
+		$directories = !empty($options['directory']) ? array_map('trim', explode(',', $options['directory'])) : false;
+
+		if ($directories) {
+			$directories_to_check = $options['directory'];
+			$this->output()->writeln("📂 Looking for URLs in $directories_to_check...");
+		}
+
 		// Extract URLs.
-		$urls = $this->tlsCheckerService->extractUrlsFromCodebase();
+		$urls = $this->tlsCheckerService->extractUrlsFromCodebase($directories);
 
 		if (empty($urls)) {
-			$this->output()->writeln("⚠️ No URLs found in codebase.");
+			$this->output()->writeln("⚠️ No URLs found in specified directories.");
 			return;
 		}
 
@@ -92,7 +104,7 @@ final class TLSCheckerCommands extends DrushCommands {
 		$this->output()->writeln("❌ Failing Domains: $failing");
 
 		if (!empty($failingUrls)) {
-			$this->output()->writeln("⚠️ The following domains are not compatible with TLS 1.2 or 1.3:");
+			$this->output()->writeln("⚠️  The following domains are not compatible with TLS 1.2 or 1.3:");
 			foreach ($failingUrls as $url) {
 				$this->output()->writeln("- $url");
 			}
