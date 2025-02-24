@@ -42,9 +42,9 @@ class ScanController extends ControllerBase {
   public function processBatch(Request $request) {
     $offset = $request->request->get('offset', 0);
     $batch_size = $request->request->get('batch_size', 10);
-    
+
     $result = $this->tlsCheckerService->scanAll($offset, $batch_size);
-    
+
     return new JsonResponse($result);
   }
 
@@ -52,13 +52,14 @@ class ScanController extends ControllerBase {
    * AJAX callback to reset scan data.
    */
   public function resetScan() {
-	try {
-		\Drupal::logger('tls_checker')->notice('Reset scan request received.');
-		$this->tlsCheckerService->resetScanData();
-		return new JsonResponse(['success' => true, 'message' => 'TLS scan data has been reset.']);
-	} catch (\Exception $e) {
-	  return new JsonResponse(['success' => false, 'message' => $e->getMessage()], 500);
-	}
+    try {
+      \Drupal::logger('tls_checker')->notice('Reset scan request received.');
+      $this->tlsCheckerService->resetScanData();
+      return new JsonResponse(['success' => TRUE, 'message' => 'TLS scan data has been reset.']);
+    }
+    catch (\Exception $e) {
+      return new JsonResponse(['success' => FALSE, 'message' => $e->getMessage()], 500);
+    }
   }
-  
+
 }

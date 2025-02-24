@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ruleset name="drupal_tls_checker">
+  <description>Default PHP CodeSniffer configuration for the drupal_tls_checker module.</description>
+  <arg name="extensions" value="php"/>
+  <!--Exclude third party code.-->
+  <exclude-pattern>./vendor/*</exclude-pattern>
+  <arg name="basepath" value="./"/>
+  <arg name="colors"/>
+  <arg name="parallel" value="8"/>
+  <arg value="sp"/>
+  <rule ref="Drupal">
+	<exclude name="Drupal.Arrays.Array.LongLineDeclaration" />
+	<exclude name="Drupal.Files.LineLength.TooLong" />
+  </rule>
+</ruleset>

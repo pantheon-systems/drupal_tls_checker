@@ -46,41 +46,51 @@ class TLSCheckerBatchController extends ControllerBase {
     );
   }
 
-	/**
-	 * Processes a batch of URLs and stores results in the database.
-	 */
-	public function processBatch(Request $request) {
-		$data = json_decode($request->getContent(), true);
-		$urls = $data['urls'] ?? [];
-	
-		\Drupal::logger('tls_checker')->debug('Received URLs for batch processing: @urls', ['@urls' => json_encode($urls)]);
-	
-		if (empty($urls)) {
-			return new JsonResponse(['error' => 'No URLs provided for scanning.'], 400);
-		}
-	
-		$this->tlsCheckerService->scanAndStoreUrls($urls);
-	
-		return new JsonResponse([
-			'success' => true,
-			'processed' => count($urls),
-		]);
-	}
-	
-	public function getScanResults() {
-		$scanResults = $this->tlsCheckerService->getScanResults();
+  /**
+   * Processes a batch of URLs and stores results in the database.
+   */
+  public function processBatch(Request $request) {
+    $data = json_decode($request->getContent(), TRUE);
+    $urls = $data['urls'] ?? [];
 
-		return new JsonResponse($scanResults);
-	}
+    \Drupal::logger('tls_checker')->debug('Received URLs for batch processing: @urls', ['@urls' => json_encode($urls)]);
 
-	/**
-	 * Returns a list of URLs for scanning.
-	 */
-	public function getUrlsToScan() {
-		$urls = $this->tlsCheckerService->extractUrlsFromCodebase();
-		
-		return new JsonResponse([
-		'urls_to_scan' => $urls
-		]);
-	}
+    if (empty($urls)) {
+      return new JsonResponse(['error' => 'No URLs provided for scanning.'], 400);
+    }
+
+    $this->tlsCheckerService->scanAndStoreUrls($urls);
+
+    return new JsonResponse([
+      'success' => TRUE,
+      'processed' => count($urls),
+    ]);
+  }
+
+  /**
+   * Retrieves the scan results from the TLS Checker service.
+   *
+   * This method calls the TLS Checker service to get the scan results and
+   * returns them as a JSON response.
+   *
+   * @return \Symfony\Component\HttpFoundation\JsonResponse
+   *   The JSON response containing the scan results.
+   */
+  public function getScanResults() {
+    $scanResults = $this->tlsCheckerService->getScanResults();
+
+    return new JsonResponse($scanResults);
+  }
+
+  /**
+   * Returns a list of URLs for scanning.
+   */
+  public function getUrlsToScan() {
+    $urls = $this->tlsCheckerService->extractUrlsFromCodebase();
+
+    return new JsonResponse([
+      'urls_to_scan' => $urls,
+    ]);
+  }
+
 }
