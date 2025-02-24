@@ -68,14 +68,9 @@ class TLSCheckerBatchController extends ControllerBase {
 	}
 	
 	public function getScanResults() {
-		$passing = $this->tlsCheckerService->getPassingUrls();
-		$failing = $this->tlsCheckerService->getFailingUrls();
+		$scanResults = $this->tlsCheckerService->getScanResults();
 
-		return new JsonResponse([
-			'passing' => count($passing),
-			'failing' => count($failing),
-			'failing_urls' => $failing,
-		]);
+		return new JsonResponse($scanResults);
 	}
 
 	/**

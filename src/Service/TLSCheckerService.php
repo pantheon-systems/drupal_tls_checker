@@ -200,6 +200,17 @@ class TLSCheckerService {
 		return array_values(array_unique($urls));
 	}
   
+	public function getScanResults() {
+		$passing = $this->getPassingUrls();
+		$failing = $this->getFailingUrls();
+
+		return [
+			'passing' => count($passing),
+			'failing' => count($failing),
+			'failing_urls' => $failing,
+		];
+	}
+
 	/**
 	 * Checks if a hostname supports TLS 1.2 or 1.3.
 	 *
