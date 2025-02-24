@@ -6,18 +6,18 @@
 	position: relative;
 	border-radius: 5px;
 	overflow: hidden;
-	margin-top: 10px;
+	margin: 10px 0;
   }
   
   .tls-progress {
 	height: 100%;
 	width: 0%;
-	background-color: #28a745;
+	background-color: #347efe;
 	text-align: center;
 	line-height: 25px;
 	color: white;
 	font-weight: bold;
-	transition: width 0.3s ease-in-out;
+	transition: all 0.3s ease-in-out;
   }
   
   #tls-progress-text {
@@ -26,6 +26,13 @@
 	text-align: center;
 	font-weight: bold;
 	color: black;
-	display: none;
+	font-size: 16px;
+	bottom: 0px;
+	transition: color 0.3s ease-in;
   }
+
+input#tls-start-scan:disabled,
+input#tls-reset-scan:disabled {
+	cursor: not-allowed;
+}
   
