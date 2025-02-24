@@ -50,34 +50,56 @@ class TLSCheckerService {
 	
 		$results = $this->scanUrls($urls);
 		$connection = \Drupal::database();
+		$processed_urls = [];
 	
 		try {
 			\Drupal::logger('tls_checker')->debug('Scan results: @results', ['@results' => json_encode($results)]);
-
-			foreach ($results as $result) {
-				$status = isset($result['status']) ?: $result['status'];
-				$url = $result['url'];
-				$parts = explode(':', $url);
-				$hostname = $parts[0];
-				$port = isset($parts[1]) ? $parts[1] : null;
-				$clean_url = ($port && !in_array($port, ['443', '80'])) ? "$hostname:$port" : $hostname;
-
-				if (!is_string($url)) {
-					\Drupal::logger('tls_checker')->warning('Unexpected data type in URLs: @url', ['@url' => json_encode($url)]);
+	
+			foreach (['passing', 'failing'] as $status) {
+				if (!isset($results[$status]) || !is_array($results[$status])) {
+					\Drupal::logger('tls_checker')->warning('Unexpected data type in scan results: @status', ['@status' => $status]);
 					continue;
 				}
-			
-				$connection->upsert('tls_checker_results')
-					->key(['url'])
-					->fields([
-						'url' => $clean_url,
-						'status' => $status,
-					])
-					->execute();
-			}		
+
+				foreach ($results[$status] as $url) {
+					if (!is_string($url)) {
+						\Drupal::logger('tls_checker')->warning('Unexpected data type in URLs: @url', ['@url' => json_encode($url)]);
+						continue;
+					}
+
+					$clean_url = $this->normalizeUrl($url);
+
+					if (!$clean_url) {
+						\Drupal::logger('tls_checker')->warning('Invalid URL after normalization: @url', ['@url' => $url]);
+						continue;
+					}
+	
+					// Avoid duplicates.
+					if (in_array($clean_url, $processed_urls, true)) {
+						continue;
+					}
+
+					$processed_urls[] = $clean_url;
+					\Drupal::logger('tls_checker')->debug(
+						'Storing @status URL: @url', 
+						[
+							'@status' => ucfirst($status), 
+							'@url' => $clean_url,
+						]
+					);
+	
+					$connection->upsert('tls_checker_results')
+						->key('url')
+						->fields([
+							'url' => $clean_url,
+							'status' => $status,
+						])
+						->execute();
+				}
+			}
 	
 			return [
-				'processed' => count($urls),
+				'processed' => count($processed_urls),
 				'passing' => count($results['passing']),
 				'failing' => count($results['failing']),
 				'failing_urls' => $results['failing'],
