@@ -35,3 +35,85 @@ You can also run the scan using the [Drush command described below](#drush-comma
 In either case, both _passing_ and _failing_ urls are stored to the database. Subsequent scans will automatically _skip_ the TLS check for URLs that are known to have passed previously (while still testing URLs that were previously failing). This data can be reset at any time either by using the `tls-checker:reset` command from Drush or in the admin with the "Reset TLS Scan Data" button.
 
 After a scan has been run, if there are any URLs detected that fail the TLS 1.2/1.3 check, an alert will be displayed on the admin page with a list of the failing URLs.
+
+## Drush Commands
+
+### `scan`
+
+Runs the TLS checker scan across all PHP files in the given directories (defaults to `/modules` and `/themes`). You can specify a directory by passing a `--directory` flag, e.g.:
+
+```bash
+drush tls-checker:scan --directory=/modules/custom
+```
+
+#### Examples
+
+```bash
+drush tls-checker:scan
+```
+
+```bash
+drush tls-checker:scan --directory=/private/scripts/quicksilver
+```
+
+Or, in a Pantheon environment using Terminus:
+
+```bash
+terminus drush -- <site>.<env> tls-checker:scan
+```
+
+### `reset`
+
+Resets the stored passing and failing URLs so the next scan will re-check all discovered URLs.
+
+#### Examples
+```bash
+drush tls-checker:reset
+```
+
+```bash
+terminus drush -- <site>.<env> tls-checker:reset
+```
+
+## How do I know it worked?
+If the scan doesn't find anything bad, you should be good to go. If it does, it will list the URLs that it found that weren't compatible. However, if you want to validate that it's working, you can create a new module with the following code:
+
+```php
+<?php
+
+namespace Drupal\tls_checker_test\Service;
+
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
+
+/**
+ * Service to test TLS requests.
+ */
+class TLSCheckerTestService {
+
+  /**
+   * Performs a request against a known bad TLS URL.
+   */
+  public function testTLSRequest() {
+    $client = new Client([
+      'verify' => TRUE, // Enforce TLS certificate verification
+      'timeout' => 5,
+    ]);
+
+    try {
+      $response = $client->get('https://tls-v1-1.badssl.com:1011/');
+      return [
+        'status' => 'success',
+        'code' => $response->getStatusCode(),
+        'body' => $response->getBody()->getContents(),
+      ];
+    }
+    catch (RequestException $e) {
+      return [
+        'status' => 'error',
+        'message' => $e->getMessage(),
+      ];
+    }
+  }
+}
+```
