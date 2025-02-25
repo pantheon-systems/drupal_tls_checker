@@ -5,6 +5,7 @@ namespace Drupal\tls_checker\Service;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
 
 /**
  * TLS Checker Service.
@@ -115,6 +116,42 @@ class TLSCheckerService {
     catch (\Exception $e) {
       \Drupal::logger('tls_checker')->error('Error storing TLS scan results: ' . $e->getMessage());
       return ['error' => 'Failed to store scan results.'];
+    }
+  }
+
+  /**
+   * Checks if a URL is reachable and follows redirects if necessary.
+   * 
+   * @param string $url
+   *   The URL to check.
+   * 
+   * @return bool
+   *   TRUE if reachable, FALSE otherwise.
+   */
+  protected function isUrlReachable(string $url) {
+    try {
+      $response = $this->httpClient->request('GET', $url, [
+        'allow_redirects' => TRUE, // Follow redirects.
+        'http_errors' => FALSE, // Don't throw exceptions for 4xx/5xx errors.
+        'timeout' => 10,
+      ]);
+
+      $statusCode = $response->getStatusCode();
+      return $statusCode < 400; // Consider anything below 400 as reachable.
+    }
+    catch (RequestException $e) {
+      $this->logger->debug('URL not reachable: @url. @message', [
+        '@url' => $url,
+        '@message' => $e->getMessage(),
+      ]);
+      return FALSE;
+    }
+    catch (\Exception $e) {
+      $this->logger->error('Unexpected error checking if URL is reachable. URL: @url. @message', [
+        '@url' => $url,
+        '@message' => $e->getMessage(),
+      ]);
+      return FALSE;
     }
   }
 
@@ -424,6 +461,14 @@ class TLSCheckerService {
 
       if (!isset($parsedUrl['host'])) {
         \Drupal::logger('tls_checker')->warning('Invalid URL skipped: @url', ['@url' => $url]);
+        continue;
+      }
+
+      // Check if the URL is reachable before proceeding.
+      if(!$this->isUrlReachable($url)) {
+        \Drupal::logger('tls_checker')->warning('Unreachable URL skipped: @url', [
+          '@url' => $url,
+        ]);
         continue;
       }
 
