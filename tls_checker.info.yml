@@ -4,3 +4,4 @@ description: 'Scans custom Drupal modules and themes for outgoing HTTP requests 
 package: 'Custom'
 core_version_requirement: ^10 || ^11
 dependencies: []
+version: "1.0"

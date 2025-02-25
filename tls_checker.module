@@ -1,0 +1,51 @@
+<?php
+
+/**
+ * @file
+ * Provides TLS validation system status integration.
+ */
+
+/**
+ * Implements hook_requirements().
+ */
+function tls_checker_requirements($phase) {
+  // Only add the check to the status report page.
+  if ($phase !== 'runtime') {
+    return [];
+  }
+
+  // Retrieve the TLS scan results.
+  $tls_checker_service = \Drupal::service('tls_checker.service');
+  $results = $tls_checker_service->getScanResults();
+
+  // Bail early if a scan has not been run.
+  if (isset($results['error'])) {
+    return [
+      'tls_checker' => [
+        'title' => t('TLS Validation Check'),
+        'value' => t('No TLS scan has been run yet.'),
+        'severity' => REQUIREMENT_WARNING, // Neutral status.
+        'description' => t('Run a TLS scan via Drush: <code>drush tls-checker:scan</code> or <a href="@url">run a scan</a>.', [
+			'@url' => \Drupal\Core\Url::fromRoute('tls_checker.admin')->toString(),
+		]),
+      ],
+    ];
+  }
+
+  $failing_count = $results['failing'];
+
+  return [
+    'tls_checker' => [
+      'title' => t('TLS Validation Check'),
+      'value' => $failing_count > 0
+        ? t('⚠️ %count failing URLs detected.', ['%count' => $failing_count])
+        : t('✅ All checked URLs passed TLS validation.'),
+      'severity' => $failing_count > 0 ? REQUIREMENT_ERROR : REQUIREMENT_OK,
+      'description' => $failing_count > 0
+        ? t('Some URLs failed TLS validation. <a href="@url">View TLS Report</a>', [
+            '@url' => \Drupal\Core\Url::fromRoute('tls_checker.admin')->toString(),
+          ])
+        : t('No issues detected with TLS validation.'),
+    ],
+  ];
+}
