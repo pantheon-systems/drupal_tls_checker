@@ -62,6 +62,9 @@ set_multidev() {
 		echo "Creating multidev environment for PHP ${php_version}."
 		terminus multidev:create "${site_id}".dev "${php_version}"
 	fi
+
+	cd ~/pantheon-local-copies/"${site_id}"
+	git checkout "${php_version}"
 }
 
 update_pantheon_php_version() {
