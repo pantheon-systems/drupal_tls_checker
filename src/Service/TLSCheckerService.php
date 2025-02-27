@@ -468,7 +468,7 @@ class TLSCheckerService {
       }
 
       // Check if the URL is reachable before proceeding.
-      if (!$this->isUrlReachable($url)) {
+      if(!$this->isUrlReachable($url)) {
         \Drupal::logger('tls_checker')->debug('Unreachable URL skipped: @url', [
           '@url' => $url,
         ]);
