@@ -78,7 +78,7 @@ jobs:
 
       - name: Install SSH key
         run: |
-          eval "$(ssh-agent) -s"
+          eval "$(ssh-agent -s)"
           ssh-add $HOME/.ssh/id_rsa
       
       - name: Validate Pantheon Host Key
