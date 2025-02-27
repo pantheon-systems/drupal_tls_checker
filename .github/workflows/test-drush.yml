@@ -72,8 +72,7 @@ jobs:
       - name: Get SSH key from secrets
         run: |
           ROBOT_SSH_KEY=$(terminus secret:org:list 5ae1fa30-8cc4-4894-8ca9-d50628dcba17 --format=json | jq -r '.[] | select(.name=="test_robot_ssh") | .value')
-          touch $HOME/.ssh/id_rsa
-          echo -e "SSH_KEY=\"$ROBOT_SSH_KEY\"" >> $HOME/.ssh/id_rsa
+          echo -e "SSH_KEY=\"$ROBOT_SSH_KEY\"" > $HOME/.ssh/id_rsa
           chmod 600 $HOME/.ssh/id_rsa
 
       - name: Install SSH key
