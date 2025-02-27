@@ -4,7 +4,7 @@ set -euo pipefail
 # Set up the environment to test against.
 readonly site_id="test-drupal-tls-checker"
 readonly terminus_token=${TERMINUS_TOKEN:-""}
-readonly commit_msg=${$COMMIT_MSG:-""}
+readonly commit_msg=${COMMIT_MSG:-""}
 readonly upstream_name=${UPSTREAM_NAME:-"drupal-cms"}
 readonly workspace=${WORKSPACE:-""}
 readonly site_name=${SITE_NAME:-"Drupal TLS Checker Test Site"}
