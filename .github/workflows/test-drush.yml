@@ -46,6 +46,15 @@ jobs:
       - name: Install bats
         uses: bats-core/bats-action@2.0.0
 
+      - name: Install Terminus
+        uses: pantheon-systems/terminus-github-actions@v1
+        with:
+          pantheon-machine-token: ${{ secrets.PANTHEON_MACHINE_TOKEN }}
+
+      - name: Install Pantheon Secrets Manager Plugin
+        run: |
+          terminus self:plugin:install terminus-secrets-manager-plugin
+
       - name: Get last commit message
         env:
           GITHUB_TOKEN: ${{ github.token }}
