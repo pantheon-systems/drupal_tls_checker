@@ -47,7 +47,7 @@ clone_site() {
 set_multidev() {
 	echo ""
 	echo -e "${YELLOW}Set the multidev to test on based on the PHP version passed in from CI."
-	if (php_version === '8.4'); then
+	if ($php_version === '84'); then
 		echo "PHP 8.4 requested but it is not yet available on Pantheon. Skipping."
 		return 0
 	fi
