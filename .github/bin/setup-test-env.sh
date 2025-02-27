@@ -60,6 +60,25 @@ set_multidev() {
 		terminus multidev:create "${site_id}".dev "${php_version}"
 	fi
 }
+
+update_pantheon_php_version() {
+    local yml_file="~/pantheon-local-copies/${site_id}/pantheon.yml"
+    local php_version_with_dot="${PHP_VERSION}"  # Ensure version has the period
+
+    # If pantheon.yml doesn't exist, create it with api_version: 1
+    if [[ ! -f "$yml_file" ]]; then
+        echo -e "${YELLOW}pantheon.yml does not exist. Creating it.${RESET}"
+        echo -e "api_version: 1\nphp_version: ${php_version_with_dot}" > "$yml_file"
+        return 0
+    fi
+
+    # Check if a php_version line exists
+    if grep -q "^php_version:" "$yml_file"; then
+        echo -e "php_version found in pantheon.yml."
+    else
+        echo -e "${YELLOW}Adding php_version to pantheon.yml.${RESET}"
+        echo "php_version: ${php_version_with_dot}" >> "$yml_file"
+    fi
 }
 
 copy_bad_module() {
