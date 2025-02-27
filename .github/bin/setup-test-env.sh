@@ -96,7 +96,7 @@ copy_bad_module() {
 copy_pr_updates() {
 	echo "Commit message: ${commit_msg}"
 	cd ~/pantheon-local-copies/"${site_id}/web/modules/custom"
-	echo -e "${YELLOW}Copying latest changes and committing to the site.${REST}"
+	echo -e "${YELLOW}Copying latest changes and committing to the site.${RESET}"
 	rsync -a --exclude=".git" "${workspace}/" .
 	cd ~/pantheon-local-copies/"${site_id}"
 	git add -A
