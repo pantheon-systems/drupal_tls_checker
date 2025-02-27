@@ -87,7 +87,7 @@ update_pantheon_php_version() {
 copy_bad_module() {
 	echo -e "${YELLOW}Checking if TLS testing module exists...${RESET}"
 	if ! terminus drush "${site_id}"."${php_version}" -- pm:list --type=module --field=name | grep -q tls_checker_test; then
-		cp -r "${workspace}"/.github/fixtures/tls_checker_test ~/pantheon-local-copies/web/modules/custom
+		cp -r "${workspace}"/.github/fixtures/tls_checker_test ~/pantheon-local-copies/${site_id}/web/modules/custom
 	else
 		echo "Test module already installed"
 	fi
