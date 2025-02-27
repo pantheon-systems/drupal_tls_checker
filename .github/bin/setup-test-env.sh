@@ -37,11 +37,14 @@ create_site() {
 
 clone_site() {
 	echo ""
-	echo -e "${YELLOW}Clone the site locally and copy the PR updates${RESET}"
+	echo -e "${YELLOW}Clone the site locally${RESET}"
 	echo "Setting up git config..."
 	git config --global user.email "cms-platform+tls-checker-test@pantheon.io"
 	git config --global user.name "Pantheon Test Bot"
 	terminus local:clone "${site_id}"
+	composer install
+	# Create the custom modules directory if it doesn't already exist.
+	mkdir -p ~/pantheon-local-copies/"${site_id}"/web/modules/custom
 }
 
 set_multidev() {
