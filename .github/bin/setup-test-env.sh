@@ -8,7 +8,7 @@ readonly commit_msg=${COMMIT_MSG:-""}
 readonly upstream_name=${UPSTREAM_NAME:-"drupal-cms-composer-managed"}
 readonly workspace=${WORKSPACE:-""}
 readonly site_name=${SITE_NAME:-"Drupal TLS Checker Test Site"}
-readonly php_version=${PHP_VERSION:-""}
+readonly php_version=${PHP_VERSION//./}
 
 # Set some colors.
 RED="\033[1;31m"
