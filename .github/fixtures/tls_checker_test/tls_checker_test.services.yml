@@ -1,0 +1,4 @@
+services:
+  tls_checker_test.service:
+    class: 'Drupal\tls_checker_test\Service\TLSCheckerTestService'
+    arguments: []
