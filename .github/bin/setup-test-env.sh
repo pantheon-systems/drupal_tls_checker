@@ -39,7 +39,7 @@ clone_site() {
 	echo ""
 	echo -e "${YELLOW}Clone the site locally and copy the PR updates${RESET}"
 	echo "Setting up git config..."
-	git config --global user.email "cms-platform+drupal-tls-checker-test@pantheon.io"
+	git config --global user.email "cms-platform+tls-checker-test@pantheon.io"
 	git config --global user.name "Pantheon Test Bot"
 	terminus local:clone "${site_id}"
 }
