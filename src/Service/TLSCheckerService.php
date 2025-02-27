@@ -147,7 +147,7 @@ class TLSCheckerService {
       return FALSE;
     }
     catch (\Exception $e) {
-      $this->logger->error('Unexpected error checking if URL is reachable. URL: @url. @message', [
+      $this->logger->debug('Unexpected error checking if URL is reachable. URL: @url. @message', [
         '@url' => $url,
         '@message' => $e->getMessage(),
       ]);
@@ -460,13 +460,13 @@ class TLSCheckerService {
       $parsedUrl = parse_url($url);
 
       if (!isset($parsedUrl['host'])) {
-        \Drupal::logger('tls_checker')->warning('Invalid URL skipped: @url', ['@url' => $url]);
+        \Drupal::logger('tls_checker')->debug('Invalid URL skipped: @url', ['@url' => $url]);
         continue;
       }
 
       // Check if the URL is reachable before proceeding.
       if(!$this->isUrlReachable($url)) {
-        \Drupal::logger('tls_checker')->warning('Unreachable URL skipped: @url', [
+        \Drupal::logger('tls_checker')->debug('Unreachable URL skipped: @url', [
           '@url' => $url,
         ]);
         continue;
