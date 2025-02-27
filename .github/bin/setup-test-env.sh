@@ -73,9 +73,10 @@ copy_bad_module() {
 
 copy_pr_updates() {
 	echo "Commit message: ${commit_msg}"
-	cd ~/pantheon-local-copies/"${site_id}"
+	cd ~/pantheon-local-copies/"${site_id}/web/modules/custom"
 	echo -e "${YELLOW}Copying latest changes and committing to the site.${REST}"
 	rsync -a --exclude=".git" "${workspace}/" .
+	cd ~/pantheon-local-copies/"${site_id}"
 	git add -A
 	git commit -m "Update to latest commit: ${commit_msg}" || true
 	git push origin "${php_version}" || true
