@@ -100,6 +100,7 @@ copy_pr_updates() {
 	echo "Commit message: ${commit_msg}"
 	cd ~/pantheon-local-copies/"${site_id}/web/modules/custom"
 	echo -e "${YELLOW}Copying latest changes and committing to the site.${RESET}"
+	mkdir -p tls_checker && cd tls_checker
 	rsync -a --exclude=".git" "${workspace}/" .
 	cd ~/pantheon-local-copies/"${site_id}"
 	git add -A
