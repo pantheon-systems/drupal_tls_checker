@@ -121,23 +121,26 @@ class TLSCheckerService {
 
   /**
    * Checks if a URL is reachable and follows redirects if necessary.
-   * 
+   *
    * @param string $url
    *   The URL to check.
-   * 
+   *
    * @return bool
    *   TRUE if reachable, FALSE otherwise.
    */
   protected function isUrlReachable(string $url) {
     try {
       $response = $this->httpClient->request('GET', $url, [
-        'allow_redirects' => TRUE, // Follow redirects.
-        'http_errors' => FALSE, // Don't throw exceptions for 4xx/5xx errors.
+      // Follow redirects.
+        'allow_redirects' => TRUE,
+      // Don't throw exceptions for 4xx/5xx errors.
+        'http_errors' => FALSE,
         'timeout' => 10,
       ]);
 
       $statusCode = $response->getStatusCode();
-      return $statusCode < 400; // Consider anything below 400 as reachable.
+      // Consider anything below 400 as reachable.
+      return $statusCode < 400;
     }
     catch (RequestException $e) {
       $this->logger->debug('URL not reachable: @url. @message', [
