@@ -58,8 +58,8 @@ set_multidev() {
 	else
 		echo "Creating multidev environment for PHP ${php_version}."
 		terminus multidev:create "${site_id}".dev "${php_version}"
-		terminus workflow:wait "${site_id}"."${php_version}"
 	fi
+}
 }
 
 copy_bad_module() {
