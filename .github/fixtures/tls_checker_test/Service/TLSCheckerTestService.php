@@ -15,7 +15,8 @@ class TLSCheckerTestService {
    */
   public function testTLSRequest() {
     $client = new Client([
-      'verify' => TRUE, // Enforce TLS certificate verification
+    // Enforce TLS certificate verification.
+      'verify' => TRUE,
       'timeout' => 5,
     ]);
 
@@ -34,4 +35,5 @@ class TLSCheckerTestService {
       ];
     }
   }
+
 }
