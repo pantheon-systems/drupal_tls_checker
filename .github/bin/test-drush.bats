@@ -8,6 +8,11 @@ terminus_token="${TERMINUS_TOKEN}"
   [ "$status" -eq 0 ]
 }
 
+@test "Enable the module" {
+  run terminus drush "${site_id}"."${php_version}" -- pm:enable tls_checker -y
+  [ "$status" -eq 0 ]
+}
+
 @test "Run TLS checker on all default folders" {
   run terminus drush "${site_id}"."${php_version}" -- tls-checker:scan
   echo "Output: $output"
