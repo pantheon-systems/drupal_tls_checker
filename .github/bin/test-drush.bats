@@ -1,6 +1,12 @@
 #!/usr/bin/env bats
 site_id="${SITE_ID:-""}"
 php_version="${PHP_VERSION:-""}"
+terminus_token="${TERMINUS_TOKEN}"
+
+@test "Authenticate terminus" {
+  run terminus auth:login --machine-token="${terminus_token}"
+  [ "$status" -eq 0 ]
+}
 
 @test "Run TLS checker on all default folders" {
   run terminus drush "${site_id}"."${php_version}" -- tls-checker:scan
