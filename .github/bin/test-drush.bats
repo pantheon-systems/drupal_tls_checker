@@ -1,6 +1,6 @@
 #!/usr/bin/env bats
-site_id="${SITE_ID:-"cxr-drupal-cms"}"
-php_version="${PHP_VERSION:-"tls"}"
+site_id="${SITE_ID:-""}"
+php_version="${PHP_VERSION:-""}"
 
 @test "Run TLS checker on all default folders" {
   run terminus drush "${site_id}"."${php_version}" -- tls-checker:scan
