@@ -68,7 +68,7 @@ set_multidev() {
 }
 
 update_pantheon_php_version() {
-    local yml_file="~/pantheon-local-copies/${site_id}/pantheon.yml"
+    local yml_file="$HOME/pantheon-local-copies/${site_id}/pantheon.yml"
     local php_version_with_dot="${PHP_VERSION}"  # Ensure version has the period
 
     # If pantheon.yml doesn't exist, create it with api_version: 1
