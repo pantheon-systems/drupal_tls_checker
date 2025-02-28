@@ -1,6 +1,6 @@
 #!/usr/bin/env bats
 site_id="${SITE_ID:-""}"
-php_version="${PHP_VERSION:-""}"
+php_version=${PHP_VERSION//./}
 terminus_token="${TERMINUS_TOKEN}"
 
 @test "Authenticate terminus" {
