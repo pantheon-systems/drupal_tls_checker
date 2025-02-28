@@ -115,6 +115,7 @@ log_into_terminus
 create_site
 clone_site
 set_multidev
+update_pantheon_php_version
 copy_bad_module
 copy_pr_updates
 echo -e "${GREEN}Test environment setup complete.${RESET} 🚀"
