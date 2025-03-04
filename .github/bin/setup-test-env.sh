@@ -62,22 +62,21 @@ clone_site() {
 
 set_multidev() {
 	echo ""
-	echo -e "${YELLOW}Set the multidev to test on based on the PHP version passed in from CI."
-	if [[$php_version == "84"]]; then
-		echo "PHP 8.4 requested but it is not yet available on Pantheon. Skipping."
-		return 0
-	fi
+	echo -e "${YELLOW}Set the multidev to test on based on the PR number passed in from CI."
+
+
 	# Check if multidev exists, create if it does not.
 	local multidevs="$(terminus multidev:list ${site_id} --fields=id --format=list)"
+	local pr_num=$(gh pr view --json number -q '.number')
 	if echo "${multidevs}" | grep -q "${php_version}"; then
-		echo "Multidev environment for PHP ${php_version} already exists."
+		echo "Multidev environment for PR ${php_version} already exists."
 	else
-		echo "Creating multidev environment for PHP ${php_version}."
-		terminus multidev:create "${site_id}".dev "${php_version}"
+		echo "Creating multidev environment for PHP ${pr_num}."
+		terminus multidev:create "${site_id}".dev "${pr_num}"
 	fi
 
 	cd ~/pantheon-local-copies/"${site_id}"
-	git checkout "${php_version}"
+	git checkout "${pr_num}"
 }
 
 update_pantheon_php_version() {
