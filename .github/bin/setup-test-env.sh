@@ -17,9 +17,9 @@ RESET="\033[0m"
 
 get_site_id() {
 	if [[ $php_version == '83' ]]; then
-		echo "test-drupal-cms-tls-checker"
+		echo "test-drupal-cms-tls-checker-83"
 	else
-		echo "test-drupal-tls-checker"
+		echo "test-drupal-tls-checker-${php_version}"
 	fi
 }
 
