@@ -70,7 +70,7 @@ set_multidev() {
 
 	# Check if multidev exists, create if it does not.
 	local multidevs="$(terminus multidev:list ${site_id} --fields=id --format=list)"
-	if echo "${multidevs}" | grep -q "${pr_num}"; then
+	if echo "${multidevs}" | grep -q "pr-${pr_num}"; then
 		echo "Multidev environment for PR ${pr_num} already exists."
 	else
 		echo "Creating multidev environment for PR ${pr_num}."
