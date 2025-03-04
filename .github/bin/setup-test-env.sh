@@ -78,8 +78,8 @@ set_multidev() {
 	fi
 
 	cd ~/pantheon-local-copies/"${site_id}"
-	git fetch origin
-	if git show-ref --verify --quiet refs/heads/pr-${pr_num}; then
+	git fetch --all
+	if git show-ref --verify --quiet refs/remotes/origin/pr-${pr_num}; then
 		echo "Branch pr-${pr_num} exists."
 		git checkout origin/"pr-${pr_num}"
 	else
