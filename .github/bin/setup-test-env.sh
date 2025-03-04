@@ -74,11 +74,18 @@ set_multidev() {
 		echo "Multidev environment for PR ${pr_num} already exists."
 	else
 		echo "Creating multidev environment for PR ${pr_num}."
-		terminus multidev:create "${site_id}".dev "${pr_num}"
+		terminus multidev:create "${site_id}".dev "pr-${pr_num}"
 	fi
 
 	cd ~/pantheon-local-copies/"${site_id}"
-	git checkout "${pr_num}"
+	git fetch origin
+	if git show-ref --verify --quiet refs/heads/pr-${pr_num}; then
+		echo "Branch pr-${pr_num} exists."
+		git checkout "pr-${pr_num}"
+	else
+		echo -e "${RED}Branch pr-${pr_num} could not be found.${RESET}"
+		return 1
+	fi
 }
 
 update_pantheon_php_version() {
