@@ -113,7 +113,7 @@ update_pantheon_php_version() {
 
 copy_bad_module() {
 	echo -e "${YELLOW}Checking if TLS testing module exists...${RESET}"
-	if ! terminus drush "${site_id}"."${php_version}" -- pm:list --type=module --field=name | grep -q tls_checker_test; then
+	if ! terminus drush "${site_id}"."pr-${pr_num}" -- pm:list --type=module --field=name | grep -q tls_checker_test; then
 		cp -r "${workspace}"/.github/fixtures/tls_checker_test ~/pantheon-local-copies/"${site_id}"/web/modules/custom
 	else
 		echo "Test module already installed"
@@ -130,7 +130,7 @@ copy_pr_updates() {
 	git add -A
 	git commit -m "Update to latest commit: ${commit_msg}" || true
 	git push origin "pr-${pr_num}" || true
-	terminus workflow:wait "${site_id}"."${php_version}"
+	terminus workflow:wait "${site_id}"."pr-${pr_num}"
 }
 
 # Run the steps
