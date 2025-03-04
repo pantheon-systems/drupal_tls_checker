@@ -25,8 +25,8 @@ get_site_id() {
 	fi
 }
 
-readonly site_id
-site_id=$(get_site_id)
+# shellcheck disable=SC2155
+readonly site_id=$(get_site_id)
 
 log_into_terminus() {
 	if ! terminus whoami; then
