@@ -20,6 +20,12 @@ site_id=$(get_site_id)
   [ "$status" -eq 0 ]
 }
 
+@test "Check that the module is installed" {
+  run terminus drush "${site_id}.pr-${pr_num}" -- pm:list --type=module --field=name | grep -w "tls_checker"
+  echo "Output: $output"
+  [[ "$output" == *"tls_checker"* ]]
+}
+
 @test "Enable the module" {
   run terminus drush "${site_id}"."pr-${pr_num}" -- pm:enable tls_checker -y
   [ "$status" -eq 0 ]
