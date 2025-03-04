@@ -7,7 +7,8 @@ readonly commit_msg=${COMMIT_MSG:-""}
 readonly upstream_name=${UPSTREAM_NAME:-"drupal-cms-composer-managed"}
 readonly workspace=${WORKSPACE:-""}
 readonly site_name=${SITE_NAME:-"Drupal TLS Checker Test Site"}
-readonly php_version=${PHP_VERSION//./}
+# shellcheck disable=SC2153
+readonly php_version=${PHP_VERSION//./} 
 readonly pr_num=${PR_NUMBER:-""}
 
 # Set some colors.
@@ -24,7 +25,8 @@ get_site_id() {
 	fi
 }
 
-readonly site_id=$(get_site_id)
+readonly site_id
+site_id=$(get_site_id)
 
 log_into_terminus() {
 	if ! terminus whoami; then
@@ -69,7 +71,8 @@ set_multidev() {
 
 
 	# Check if multidev exists, create if it does not.
-	local multidevs="$(terminus multidev:list ${site_id} --fields=id --format=list)"
+	local multidevs
+	multidevs="$(terminus multidev:list "${site_id}" --fields=id --format=list)"
 	if echo "${multidevs}" | grep -q "pr-${pr_num}"; then
 		echo "Multidev environment for PR ${pr_num} already exists."
 	else
@@ -79,7 +82,7 @@ set_multidev() {
 
 	cd ~/pantheon-local-copies/"${site_id}"
 	git fetch --all
-	if git show-ref --verify --quiet refs/remotes/origin/pr-${pr_num}; then
+	if git show-ref --verify --quiet refs/remotes/origin/pr-"${pr_num}"; then
 		echo "Branch pr-${pr_num} exists."
 		git checkout origin/"pr-${pr_num}"
 	else
@@ -111,7 +114,7 @@ update_pantheon_php_version() {
 copy_bad_module() {
 	echo -e "${YELLOW}Checking if TLS testing module exists...${RESET}"
 	if ! terminus drush "${site_id}"."${php_version}" -- pm:list --type=module --field=name | grep -q tls_checker_test; then
-		cp -r "${workspace}"/.github/fixtures/tls_checker_test ~/pantheon-local-copies/${site_id}/web/modules/custom
+		cp -r "${workspace}"/.github/fixtures/tls_checker_test ~/pantheon-local-copies/"${site_id}"/web/modules/custom
 	else
 		echo "Test module already installed"
 	fi

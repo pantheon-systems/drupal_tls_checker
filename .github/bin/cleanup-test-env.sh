@@ -3,7 +3,8 @@ set -euo pipefail
 
 # Set up the environment to test against.
 readonly terminus_token=${TERMINUS_TOKEN:-""}
-readonly php_version=${PHP_VERSION//./}
+# shellcheck disable=SC2153
+readonly php_version=${PHP_VERSION//./} 
 readonly pr_num=${PR_NUMBER:-""}
 
 function get_site_id() {
@@ -14,7 +15,8 @@ function get_site_id() {
 	fi
 }
 
-readonly site_id=$(get_site_id)
+readonly site_id
+site_id=$(get_site_id)
 
 function log_into_terminus() {
 	if ! terminus whoami; then
@@ -37,7 +39,7 @@ function delete_multidev() {
 		created=$(echo "$multidev" | jq -r '.created')
 
 		if (( created < threshold_date )); then
-			echo "Deleting multidev ${id} created on $(date -d @$created)"
+			echo "Deleting multidev ${id} created on $(date -d @"$created")"
 			terminus multidev:delete "${site_id}" "${id}" -y
 		fi
 	done
