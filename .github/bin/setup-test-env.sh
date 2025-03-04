@@ -50,7 +50,7 @@ create_site() {
 		terminus plan:set "${site_id}" "plan-performance_small-contract-annual-1"
 	fi
 
-	terminus connection:set "${site_id}".dev git -y
+	update_drupal_core
 }
 
 clone_site() {
@@ -63,6 +63,38 @@ clone_site() {
 	composer install
 	# Create the custom modules directory if it doesn't already exist.
 	mkdir -p ~/pantheon-local-copies/"${site_id}"/web/modules/custom
+}
+
+update_drupal_core() {
+    echo -e "${YELLOW}Checking Drupal core version...${RESET}"
+    
+    # Get the current installed Drupal version
+    local current_version
+    current_version=$(terminus drush "${site_id}.dev" -- status drupal-version --format=list | cut -d. -f1)
+
+    echo "Current Drupal version: ${current_version}"
+
+    # Check if the version is below 11
+    if [[ "$current_version" -lt 11 ]]; then
+        echo -e "${YELLOW}Updating Drupal core to version 10...${RESET}"
+        
+        # Switch to SFTP mode if necessary
+        terminus connection:set "${site_id}.dev" sftp -y
+        
+        # Run Composer update for Drupal core
+        terminus drush "${site_id}.dev" -- composer require drupal/core:^10 --update-with-dependencies
+        
+        # Rebuild caches after updating
+        terminus drush "${site_id}.dev" -- cache:rebuild
+
+		terminus env:commit "${site_id}.dev" --message="Update to Drupal 10"
+        
+        echo -e "${GREEN}Drupal core updated to 10 successfully.${RESET}"
+    else
+        echo -e "${GREEN}Drupal is already on version 11 or higher. No update needed.${RESET}"
+    fi
+
+	terminus connection:set "${site_id}.dev" git -y
 }
 
 set_multidev() {
