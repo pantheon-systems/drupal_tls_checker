@@ -89,6 +89,10 @@ set_multidev() {
 		echo -e "${RED}Branch pr-${pr_num} could not be found.${RESET}"
 		return 1
 	fi
+
+	# Setup the Drupal site.
+	terminus drush "${site_id}"."pr-${pr_num}" -- si -y
+	terminus drush "${site_id}"."pr-${pr_num}" -- cr
 }
 
 update_pantheon_php_version() {
