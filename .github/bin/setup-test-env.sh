@@ -126,7 +126,7 @@ copy_pr_updates() {
 	cd ~/pantheon-local-copies/"${site_id}"
 	git add -A
 	git commit -m "Update to latest commit: ${commit_msg}" || true
-	git push origin "${php_version}" || true
+	git push origin "pr-${php_version}" || true
 	terminus workflow:wait "${site_id}"."${php_version}"
 }
 
