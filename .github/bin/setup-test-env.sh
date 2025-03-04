@@ -43,7 +43,7 @@ create_site() {
 		terminus site:create "${site_id}" "${site_name}" "${upstream_name}" --org=5ae1fa30-8cc4-4894-8ca9-d50628dcba17
 	fi
 
-	if terminus plan:info "${site_id}" | grep -q "sandbox"; then
+	if terminus plan:info "${site_id}" | grep -q "Sandbox"; then
 		echo "Site is on a sandbox plan, setting to performance_small."
 		terminus plan:set "${site_id}" "plan-performance_small-contract-annual-1"
 	fi
