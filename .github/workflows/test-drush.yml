@@ -94,3 +94,12 @@ jobs:
           PHP_VERSION: ${{ matrix.php-version }}
           TERMINUS_TOKEN: ${{ secrets.PANTHEON_MACHINE_TOKEN }}
         run: composer test:bats
+
+      - name: Cleanup
+        if: success()
+        env:
+          TERMINUS_TOKEN: ${{ secrets.PANTHEON_MACHINE_TOKEN }}
+          PR_NUMBER: ${{ env.PR_NUMBER }}
+          PHP_VERSION: ${{ matrix.php-version }}
+        run: bash ${{ github.workspace }}/.github/bin/cleanup-test-env.sh
+          
