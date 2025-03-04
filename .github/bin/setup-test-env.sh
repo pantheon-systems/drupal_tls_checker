@@ -8,6 +8,7 @@ readonly upstream_name=${UPSTREAM_NAME:-"drupal-cms-composer-managed"}
 readonly workspace=${WORKSPACE:-""}
 readonly site_name=${SITE_NAME:-"Drupal TLS Checker Test Site"}
 readonly php_version=${PHP_VERSION//./}
+readonly pr_num=${PR_NUMBER:-""}
 
 # Set some colors.
 RED="\033[1;31m"
@@ -67,11 +68,10 @@ set_multidev() {
 
 	# Check if multidev exists, create if it does not.
 	local multidevs="$(terminus multidev:list ${site_id} --fields=id --format=list)"
-	local pr_num=$(gh pr view --json number -q '.number')
-	if echo "${multidevs}" | grep -q "${php_version}"; then
-		echo "Multidev environment for PR ${php_version} already exists."
+	if echo "${multidevs}" | grep -q "${pr_num}"; then
+		echo "Multidev environment for PR ${pr_num} already exists."
 	else
-		echo "Creating multidev environment for PHP ${pr_num}."
+		echo "Creating multidev environment for PR ${pr_num}."
 		terminus multidev:create "${site_id}".dev "${pr_num}"
 	fi
 
