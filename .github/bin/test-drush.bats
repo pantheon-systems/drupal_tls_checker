@@ -27,7 +27,7 @@ site_id=$(get_site_id)
 }
 
 @test "Enable the module" {
-  run terminus drush "${site_id}"."pr-${pr_num}" -- pm:enable tls_checker -y
+  run terminus drush "${site_id}.pr-${pr_num}" -- pm:enable tls_checker -y
   [ "$status" -eq 0 ]
 
   run terminus drush "${site_id}.pr-${pr_num}" cr
@@ -38,7 +38,7 @@ site_id=$(get_site_id)
 }
 
 @test "Run TLS checker on all default folders" {
-  run terminus drush "${site_id}"."pr-${pr_num}" -- tls-checker:scan
+  run terminus drush "${site_id}.pr-${pr_num}" -- tls-checker:scan
   echo "Output: $output"
   echo "Site ID: ${site_id}"
   echo "PR number: ${pr_num}"
@@ -48,7 +48,7 @@ site_id=$(get_site_id)
 }
 
 @test "Run TLS data reset" {
-  run terminus drush "${site_id}"."pr-${pr_num}" -- tls-checker:reset
+  run terminus drush "${site_id}.pr-${pr_num}" -- tls-checker:reset
   echo "Output: $output"
   echo "Site ID: ${site_id}"
   echo "PR number: ${pr_num}"
@@ -58,13 +58,13 @@ site_id=$(get_site_id)
 }
 
 @test "Run TLS checker report on empty data" {
-  run terminus drush "${site_id}"."pr-${pr_num}" -- tls-checker:report
+  run terminus drush "${site_id}.pr-${pr_num}" -- tls-checker:report
   [ "$status" -eq 0 ]  
   [[ "$output" == *"No scan data found."* ]]  
 }
 
 @test "Run TLS checker on just custom modules (specified directory)" {
-  run terminus drush "${site_id}"."pr-${pr_num}" -- tls-checker:scan --directory=modules/custom
+  run terminus drush "${site_id}.pr-${pr_num}" -- tls-checker:scan --directory=modules/custom
   echo "Output: $output"
   echo "Site ID: ${site_id}"
   echo "PR number: ${pr_num}"
@@ -74,7 +74,7 @@ site_id=$(get_site_id)
 }
 
 @test "Run TLS checker report" {
-  run terminus drush "${site_id}"."pr-${pr_num}" -- tls-checker:report --format=json
+  run terminus drush "${site_id}.pr-${pr_num}" -- tls-checker:report --format=json
     echo "Output: $output"
     echo "Site ID: ${site_id}"
     echo "PR number: ${pr_num}"
@@ -84,7 +84,7 @@ site_id=$(get_site_id)
 }
 
 @test "Check if tls_checker_results table exists" {
-  run terminus drush "${site_id}"."pr-${pr_num}" -- sqlq "SHOW TABLES LIKE 'tls_checker_results';"
+  run terminus drush "${site_id}.pr-${pr_num}" -- sqlq "SHOW TABLES LIKE 'tls_checker_results';"
   echo "Output: $output"
   echo "Site ID: ${site_id}"
   echo "PR number: ${pr_num}"
@@ -94,7 +94,7 @@ site_id=$(get_site_id)
 }
 
 @test "Check if tls_checker_results table contains failing URL" {
-  run terminus drush "${site_id}"."pr-${pr_num}" -- sqlq "SELECT * FROM tls_checker_results WHERE url = 'tls-v1-1.badssl.com:1011' AND status = 'failing';"
+  run terminus drush "${site_id}.pr-${pr_num}" -- sqlq "SELECT * FROM tls_checker_results WHERE url = 'tls-v1-1.badssl.com:1011' AND status = 'failing';"
   echo "Output: $output"
   echo "Site ID: ${site_id}"
   echo "PR number: ${pr_num}"
@@ -104,11 +104,11 @@ site_id=$(get_site_id)
 }
 
 @test "Reset the data and confirm the tls_checker_results table does not exist" {
-  terminus drush "${site_id}"."pr-${pr_num}" -- tls-checker:reset
+  terminus drush "${site_id}.pr-${pr_num}" -- tls-checker:reset
   echo "Output: $output"
   echo "Site ID: ${site_id}"
   echo "PR number: ${pr_num}"
   echo "Status: $status"
-  run terminus drush "${site_id}"."pr-${pr_num}" -- sqlq "SELECT * FROM tls_checker_results WHERE url = 'tls-v1-1.badssl.com:1011' AND status = 'failing';"
+  run terminus drush "${site_id}.pr-${pr_num}" -- sqlq "SELECT * FROM tls_checker_results WHERE url = 'tls-v1-1.badssl.com:1011' AND status = 'failing';"
   [ "$status" -eq 1 ]
 }
