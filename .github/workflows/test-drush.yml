@@ -90,9 +90,9 @@ jobs:
 
       - name: Run Drush CLI tests
         env:
-          SITE_ID: test-drupal-tls-checker
           PR_NUMBER: ${{ env.PR_NUMBER }}
           TERMINUS_TOKEN: ${{ secrets.PANTHEON_MACHINE_TOKEN }}
+          PHP_VERSION: ${{ matrix.php-version }}
         run: composer test:bats
 
       - name: Cleanup
