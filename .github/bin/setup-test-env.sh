@@ -81,7 +81,7 @@ set_multidev() {
 	git fetch origin
 	if git show-ref --verify --quiet refs/heads/pr-${pr_num}; then
 		echo "Branch pr-${pr_num} exists."
-		git checkout "pr-${pr_num}"
+		git checkout origin/"pr-${pr_num}"
 	else
 		echo -e "${RED}Branch pr-${pr_num} could not be found.${RESET}"
 		return 1
