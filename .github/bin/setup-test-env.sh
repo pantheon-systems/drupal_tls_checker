@@ -41,11 +41,13 @@ create_site() {
 		echo "Test site already exists, skipping site creation."
 	else
 		terminus site:create "${site_id}" "${site_name}" "${upstream_name}" --org=5ae1fa30-8cc4-4894-8ca9-d50628dcba17
-		# If the site is a sandbox, set it to a contract so the site doesn't freeze.
-		if terminus plan:info "${site_id}" | grep -q "sandbox"; then
-			terminus plan:set "${site_id}" "plan-performance_small-contract-annual-1"
-		fi
 	fi
+
+	if terminus plan:info "${site_id}" | grep -q "sandbox"; then
+		echo "Site is on a sandbox plan, setting to performance_small."
+		terminus plan:set "${site_id}" "plan-performance_small-contract-annual-1"
+	fi
+
 	terminus connection:set "${site_id}".dev git -y
 }
 
