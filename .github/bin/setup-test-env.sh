@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # Set up the environment to test against.
-readonly site_id="test-drupal-tls-checker"
+readonly site_id=$(get_site_id)
 readonly terminus_token=${TERMINUS_TOKEN:-""}
 readonly commit_msg=${COMMIT_MSG:-""}
 readonly upstream_name=${UPSTREAM_NAME:-"drupal-cms-composer-managed"}
@@ -15,6 +15,14 @@ RED="\033[1;31m"
 GREEN="\033[1;32m"
 YELLOW="\033[1;33m"
 RESET="\033[0m"
+
+get_site_id() {
+	if [[ $php_version === '83' ]]; then
+		echo "test-drupal-cms-tls-checker"
+	else
+		echo "test-drupal-tls-checker"
+	fi
+}
 
 log_into_terminus() {
 	if ! terminus whoami; then
