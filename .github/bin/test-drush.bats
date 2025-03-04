@@ -23,6 +23,12 @@ site_id=$(get_site_id)
 @test "Enable the module" {
   run terminus drush "${site_id}"."pr-${pr_num}" -- pm:enable tls_checker -y
   [ "$status" -eq 0 ]
+
+  run terminus drush "${site_id}.pr-${pr_num}" cr
+  [ "$status" -eq 0 ]
+
+  run terminus drush "${site_id}.pr-${pr_num}" cache:clear drush
+  [ "$status" -eq 0 ]
 }
 
 @test "Run TLS checker on all default folders" {
