@@ -84,13 +84,8 @@ update_drupal_core() {
         terminus connection:set "${site_id}.dev" sftp -y
         
         # Run Composer update for Drupal core
-		terminus composer "${site_id}.dev" -- remove drupal/core-recommended
-		terminus composer "${site_id}.dev" -- remove pantheon-systems/drupal-integrations
-        terminus composer "${site_id}.dev" -- require drupal/core:^10 --update-with-all-dependencies -W
-        terminus composer "${site_id}.dev" -- require drupal/core-recommended:^10 --update-with-all-dependencies -W
-		terminus composer "${site_id}.dev" -- require symfony/console:^6.4 --update-with-all-dependencies -W
-		terminus composer "${site_id}.dev" -- require pantheon-systems/drupal-integrations
-
+		terminus composer "${site_id}.dev" -- remove drupal/core-recommended pantheon-systems/drupal-integrations
+		terminus composer "${site_id}.dev" -- require drupal/core-recommended:^10 symfony/console:^6.4 pantheon-systems/drupal-integrations --update-with-all-dependencies -W
         
         # Rebuild caches after updating
         terminus drush "${site_id}.dev" -- cache:rebuild
