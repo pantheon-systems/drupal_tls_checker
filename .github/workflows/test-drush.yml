@@ -6,6 +6,12 @@ on:
       - reopened
       - synchronize
       - ready_for_review
+    paths:
+      - 'tls_checker*'
+      - 'css/*'
+      - 'js/*'
+      - 'bin/*'
+      - 'src/*'  
 
 permissions:
   contents: write

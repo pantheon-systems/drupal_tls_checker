@@ -68,37 +68,37 @@ clone_site() {
 update_drupal_core() {
 	# Switch to Git mode and clear out any possible changes on the remote.
 	terminus connection:set "${site_id}.dev" git -y
-    echo -e "${YELLOW}Checking Drupal core version...${RESET}"
-    
-    # Get the current installed Drupal version
-    local current_version
-    current_version=$(terminus drush "${site_id}.dev" -- core:status --format=list --fields=drupal-version | cut -d. -f1)
+	echo -e "${YELLOW}Checking Drupal core version...${RESET}"
+	
+	# Get the current installed Drupal version
+	local current_version
+	current_version=$(terminus drush "${site_id}.dev" -- core:status --format=list --fields=drupal-version | cut -d. -f1)
 
-    echo "Current Drupal version: ${current_version}"
+	echo "Current Drupal version: ${current_version}"
 
-    # Check if the version is below 11
-    if [[ "$current_version" -lt 10 ]]; then
-        # Switch to SFTP mode if necessary
-        terminus connection:set "${site_id}.dev" sftp -y
+	# Check if the version is below 11
+	if [[ "$current_version" -lt 10 ]]; then
+		# Switch to SFTP mode if necessary
+		terminus connection:set "${site_id}.dev" sftp -y
 
 		echo -e "${YELLOW}Updating Drush to 12...${RESET}"
 		terminus composer "${site_id}.dev" -- require drush/drush:^12 --update-with-all-dependencies -W
 
-        echo -e "${YELLOW}Updating Drupal core to version 10...${RESET}"
-        
-        # Run Composer update for Drupal core
+		echo -e "${YELLOW}Updating Drupal core to version 10...${RESET}"
+		
+		# Run Composer update for Drupal core
 		terminus composer "${site_id}.dev" -- remove drupal/core-recommended pantheon-systems/drupal-integrations
 		terminus composer "${site_id}.dev" -- require drupal/core-recommended:^10 symfony/console:^6.4 pantheon-systems/drupal-integrations --update-with-all-dependencies -W
-        
-        # Rebuild caches after updating
-        terminus drush "${site_id}.dev" -- cache:rebuild
+		
+		# Rebuild caches after updating
+		terminus drush "${site_id}.dev" -- cache:rebuild
 
 		terminus env:commit "${site_id}.dev" --message="Update to Drupal 10"
-        
-        echo -e "${GREEN}Drupal core updated to 10 successfully.${RESET}"
-    else
-        echo -e "${GREEN}Drupal is already on version 10 or higher. No update needed.${RESET}"
-    fi
+		
+		echo -e "${GREEN}Drupal core updated to 10 successfully.${RESET}"
+	else
+		echo -e "${GREEN}Drupal is already on version 10 or higher. No update needed.${RESET}"
+	fi
 
 	terminus connection:set "${site_id}.dev" git -y
 }
@@ -134,23 +134,23 @@ set_multidev() {
 }
 
 update_pantheon_php_version() {
-    local yml_file="$HOME/pantheon-local-copies/${site_id}/pantheon.yml"
-    local php_version_with_dot="${PHP_VERSION}"  # Ensure version has the period
+	local yml_file="$HOME/pantheon-local-copies/${site_id}/pantheon.yml"
+	local php_version_with_dot="${PHP_VERSION}"  # Ensure version has the period
 
-    # If pantheon.yml doesn't exist, create it with api_version: 1
-    if [[ ! -f "$yml_file" ]]; then
-        echo -e "${YELLOW}pantheon.yml does not exist. Creating it.${RESET}"
-        echo -e "api_version: 1\nphp_version: ${php_version_with_dot}" > "$yml_file"
-        return 0
-    fi
+	# If pantheon.yml doesn't exist, create it with api_version: 1
+	if [[ ! -f "$yml_file" ]]; then
+		echo -e "${YELLOW}pantheon.yml does not exist. Creating it.${RESET}"
+		echo -e "api_version: 1\nphp_version: ${php_version_with_dot}" > "$yml_file"
+		return 0
+	fi
 
-    # Check if a php_version line exists
-    if grep -q "^php_version:" "$yml_file"; then
-        echo -e "php_version found in pantheon.yml."
-    else
-        echo -e "${YELLOW}Adding php_version to pantheon.yml.${RESET}"
-        echo "php_version: ${php_version_with_dot}" >> "$yml_file"
-    fi
+	# Check if a php_version line exists
+	if grep -q "^php_version:" "$yml_file"; then
+		echo -e "php_version found in pantheon.yml."
+	else
+		echo -e "${YELLOW}Adding php_version to pantheon.yml.${RESET}"
+		echo "php_version: ${php_version_with_dot}" >> "$yml_file"
+	fi
 }
 
 copy_bad_module() {
@@ -169,10 +169,19 @@ copy_pr_updates() {
 	mkdir -p tls_checker && cd tls_checker
 	rsync -a --exclude=".git" "${workspace}/" .
 	cd ~/pantheon-local-copies/"${site_id}"
-	git add -A
-	git commit -m "Update to latest commit: ${commit_msg}" || true
-	git push origin "pr-${pr_num}" || true
-	terminus workflow:wait "${site_id}.pr-${pr_num}"
+	
+	# Check if there are changes to commit
+	if [[ -n $(git status --porcelain) ]]; then
+		echo "Changes detected. Committing and pushing..."
+		git add -A
+		git commit -m "Update to latest commit: ${commit_msg}" || true
+		git push origin "pr-${pr_num}" || true
+		
+		# Run workflow:wait only if changes were committed
+		terminus workflow:wait "${site_id}.pr-${pr_num}"
+	else
+		echo "No changes detected. Skipping commit, push, and workflow:wait."
+	fi
 }
 
 # Run the steps
