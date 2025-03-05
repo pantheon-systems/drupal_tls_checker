@@ -1,5 +1,5 @@
 {
-    "name": "jazzsequence/drupal_tls_checker",
+    "name": "pantheon-systems/drupal_tls_checker",
     "description": "A scanner for outgoing HTTP requests in Drupal code to check TLS 1.2/1.3 compatibility.",
     "type": "drupal-module",
     "require-dev": {
@@ -10,7 +10,7 @@
     "authors": [
         {
             "name": "Chris Reynolds",
-            "email": "chris@jazzsequence.com"
+            "email": "chris.reynolds@pantheon.io"
         }
     ],
     "minimum-stability": "stable",
