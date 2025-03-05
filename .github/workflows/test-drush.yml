@@ -87,6 +87,7 @@ jobs:
             SITE_ID="test-drupal-tls-checker-${php_version}"
           fi
           echo "SITE_ID=${SITE_ID}" >> $GITHUB_ENV
+          echo "TARGET_ENV=pr-${PR_NUMBER}-${SITE_ID}" >> $GITHUB_ENV
 
       - name: Install SSH key
         uses: webfactory/ssh-agent@v0.9.0
@@ -118,8 +119,9 @@ jobs:
           token: ${{ github.token }}
           status: ${{ job.status }}
           ref: ${{ github.head_ref }}
-          env: pr-${{ env.PR_NUMBER }}-${{ env.SITE_ID }}.pantheonsite.io
-          env_url: https://pr-${{ env.PR_NUMBER }}-${{ env.SITE_ID }}.pantheonsite.io
+          env: ${{ env.TARGET_ENV }}
+          env_url: https://${{ env.TARGET_ENV }}.pantheonsite.io
+          deployment_id: ${{ steps.deployment.outputs.deployment_id }}
 
       - name: Run Drush CLI tests
         env:
