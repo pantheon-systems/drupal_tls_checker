@@ -10,7 +10,8 @@ on:
       - 'tls_checker*'
       - 'css/*'
       - 'js/*'
-      - 'bin/*'
+      - '.github/bin/*'
+      - '.github/workflows/test-drush.yml'
       - 'src/*'  
 
 permissions:
@@ -75,6 +76,18 @@ jobs:
           echo "Commit message: ${CLEAN_COMMIT_MSG}"
           echo "COMMIT_MSG=${CLEAN_COMMIT_MSG}" >> $GITHUB_ENV
           echo "PR_NUMBER=${PR_NUMBER}" >> $GITHUB_ENV
+
+      - name: Setup environment variables
+        run: |
+          PHP_VERSION=${{ matrix.php-version }}
+          php_version=${PHP_VERSION//./}
+          if [[ $php_version == '83' ]]; then
+            SITE_ID="test-drupal-cms-tls-checker-83"
+          else
+            SITE_ID="test-drupal-tls-checker-${php_version}"
+          fi
+          echo "SITE_ID=${SITE_ID}" >> $GITHUB_ENV
+          echo "TARGET_ENV=pr-${PR_NUMBER}-${SITE_ID}" >> $GITHUB_ENV
 
       - name: Install SSH key
         uses: webfactory/ssh-agent@v0.9.0
