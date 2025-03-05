@@ -20,3 +20,4 @@ jobs:
           gh_token: ${{ github.token }}
           build_composer_assets: "true"
           generate_release_notes: "true"
+          readme_md: "README.md"
