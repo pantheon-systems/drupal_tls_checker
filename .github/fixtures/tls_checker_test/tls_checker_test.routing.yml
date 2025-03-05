@@ -1,0 +1,7 @@
+tls_checker_test.admin:
+  path: '/admin/config/tls-checker/test'
+  defaults:
+    _controller: '\Drupal\tls_checker_test\Controller\TLSCheckerTestController::testTLS'
+    _title: 'TLS Checker Test'
+  requirements:
+    _permission: 'administer site configuration'

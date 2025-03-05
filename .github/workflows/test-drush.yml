@@ -1,0 +1,109 @@
+name: Test Drush CLI
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - ready_for_review
+
+permissions:
+  contents: write
+  actions: read
+  pull-requests: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php-version: ['8.1', '8.2', '8.3']
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version}}
+
+      - name: Cache Composer dependencies
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+    
+      - uses: actions/cache@v4
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-     
+
+      - name: Check Composer lock file is up to date
+        run: composer validate --no-check-all
+
+      - name: Install Composer dependencies
+        run: composer install --prefer-dist
+
+      - name: Install bats
+        uses: bats-core/bats-action@2.0.0
+
+      - name: Install Terminus
+        uses: pantheon-systems/terminus-github-actions@v1
+        with:
+          pantheon-machine-token: ${{ secrets.PANTHEON_MACHINE_TOKEN }}
+
+      - name: Install Terminus Composer plugin
+        run: |
+          terminus self:plugin:install pantheon-systems/terminus-composer-plugin
+
+      - name: Get last commit message
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          cd ${{ github.workspace }}
+          PR_NUMBER=$(echo ${{ github.event.pull_request.number }})
+          COMMIT_MSG=$(gh pr view $PR_NUMBER --json commits --jq '.commits[-1] | "\(.messageHeadline) \(.messageBody)"')
+          # Replace newlines and carriage returns with spaces
+          CLEAN_COMMIT_MSG=$(echo "$COMMIT_MSG" | tr '\n\r' '  ')
+          # Remove single quotes
+          CLEAN_COMMIT_MSG=$(echo "$CLEAN_COMMIT_MSG" | sed "s/'//g")
+          echo "Commit message: ${CLEAN_COMMIT_MSG}"
+          echo "COMMIT_MSG=${CLEAN_COMMIT_MSG}" >> $GITHUB_ENV
+          echo "PR_NUMBER=${PR_NUMBER}" >> $GITHUB_ENV
+
+      - name: Install SSH key
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      
+      - name: Validate Pantheon Host Key
+        shell: bash
+        run: |
+          echo "Host *.drush.in HostKeyAlgorithms +ssh-rsa" >> ~/.ssh/config
+          echo "Host *.drush.in PubkeyAcceptedKeyTypes +ssh-rsa" >> ~/.ssh/config
+          echo "StrictHostKeyChecking no" >> ~/.ssh/config
+
+      - name: Setup site for testing
+        env:
+          TERMINUS_TOKEN: ${{ secrets.PANTHEON_MACHINE_TOKEN }}
+          COMMIT_MSG: ${{ env.COMMIT_MSG }}
+          WORKSPACE: ${{ github.workspace }}
+          PHP_VERSION: ${{ matrix.php-version }}
+          UPSTREAM_NAME: ${{ matrix.php-version == '8.3' && 'drupal-cms-composer-managed' || 'drupal-10-composer-managed' }}
+          PR_NUMBER: ${{ env.PR_NUMBER }}
+        run: bash ${{ github.workspace }}/.github/bin/setup-test-env.sh        
+
+      - name: Run Drush CLI tests
+        env:
+          PR_NUMBER: ${{ env.PR_NUMBER }}
+          TERMINUS_TOKEN: ${{ secrets.PANTHEON_MACHINE_TOKEN }}
+          PHP_VERSION: ${{ matrix.php-version }}
+        run: composer test:bats
+
+      - name: Cleanup
+        if: success()
+        env:
+          TERMINUS_TOKEN: ${{ secrets.PANTHEON_MACHINE_TOKEN }}
+          PR_NUMBER: ${{ env.PR_NUMBER }}
+          PHP_VERSION: ${{ matrix.php-version }}
+        run: bash ${{ github.workspace }}/.github/bin/cleanup-test-env.sh
+          
