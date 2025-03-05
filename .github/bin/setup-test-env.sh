@@ -66,7 +66,7 @@ clone_site() {
 }
 
 update_drupal_core() {
-		# Switch to Git mode and clear out any possible changes on the remote.
+	# Switch to Git mode and clear out any possible changes on the remote.
 	terminus connection:set "${site_id}.dev" git -y
     echo -e "${YELLOW}Checking Drupal core version...${RESET}"
     
