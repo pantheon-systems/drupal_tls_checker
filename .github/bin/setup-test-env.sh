@@ -77,7 +77,7 @@ update_drupal_core() {
     echo "Current Drupal version: ${current_version}"
 
     # Check if the version is below 11
-    if [[ "$current_version" -lt 11 ]]; then
+    if [[ "$current_version" -lt 10 ]]; then
         # Switch to SFTP mode if necessary
         terminus connection:set "${site_id}.dev" sftp -y
 
