@@ -21,7 +21,7 @@ readonly site_id=$(get_site_id)
 function log_into_terminus() {
 	if ! terminus whoami; then
 		echo -e "${YELLOW}Log into Terminus${RESET}"
-		terminus auth:login --machine-token="${terminus_token}"
+		terminus auth:login --machine-token="${terminus_token}" -q
 	fi
 }
 
