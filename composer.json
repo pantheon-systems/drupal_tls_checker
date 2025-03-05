@@ -31,7 +31,7 @@
         "phpcbf": "vendor/bin/phpcbf .",
         "test:bats": [
             "which bats > /dev/null 2>&1 || echo \"bats is not installed\"",
-            "$(which bats) .github/bin/test-drush.bats "
+            "$(which bats) .github/bin/test-drush.bats"
         ]
     }
 }
