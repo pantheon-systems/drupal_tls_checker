@@ -101,15 +101,6 @@ jobs:
           echo "Host *.drush.in PubkeyAcceptedKeyTypes +ssh-rsa" >> ~/.ssh/config
           echo "StrictHostKeyChecking no" >> ~/.ssh/config
 
-      - name: Start Deployment
-        uses: bobheadxi/deployments@v1
-        id: deployment
-        with:
-          step: start
-          token: ${{ github.token }}
-          env: ${{ env.TARGET_ENV }}
-          ref: ${{ github.head_ref }}
-
       - name: Setup site for testing
         env:
           TERMINUS_TOKEN: ${{ secrets.PANTHEON_MACHINE_TOKEN }}
@@ -119,18 +110,6 @@ jobs:
           UPSTREAM_NAME: ${{ matrix.php-version == '8.3' && 'drupal-cms-composer-managed' || 'drupal-10-composer-managed' }}
           PR_NUMBER: ${{ env.PR_NUMBER }}
         run: bash ${{ github.workspace }}/.github/bin/setup-test-env.sh        
-
-      - name: Update deployment status
-        uses: bobheadxi/deployments@v1
-        if: always()
-        with:
-          step: finish
-          token: ${{ github.token }}
-          status: ${{ job.status }}
-          ref: ${{ github.head_ref }}
-          env: ${{ env.TARGET_ENV }}
-          env_url: https://${{ env.TARGET_ENV }}.pantheonsite.io
-          deployment_id: ${{ steps.deployment.outputs.deployment_id }}
 
       - name: Run Drush CLI tests
         env:
