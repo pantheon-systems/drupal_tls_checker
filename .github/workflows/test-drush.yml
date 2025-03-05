@@ -51,6 +51,10 @@ jobs:
         with:
           pantheon-machine-token: ${{ secrets.PANTHEON_MACHINE_TOKEN }}
 
+      - name: Install Terminus Composer plugin
+        run: |
+          terminus self:plugin:install pantheon-systems/terminus-composer-plugin
+
       - name: Get last commit message
         env:
           GITHUB_TOKEN: ${{ github.token }}
