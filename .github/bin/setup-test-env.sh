@@ -97,7 +97,7 @@ update_drupal_core() {
         
         echo -e "${GREEN}Drupal core updated to 10 successfully.${RESET}"
     else
-        echo -e "${GREEN}Drupal is already on version 11 or higher. No update needed.${RESET}"
+        echo -e "${GREEN}Drupal is already on version 10 or higher. No update needed.${RESET}"
     fi
 
 	terminus connection:set "${site_id}.dev" git -y
