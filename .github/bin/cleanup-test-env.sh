@@ -26,7 +26,7 @@ function log_into_terminus() {
 }
 
 function delete_multidev() {
-	terminus multidev:delete "${site_id}" "pr-${pr_num}" -y
+	terminus multidev:delete "${site_id}.pr-${pr_num}" -y
 
 	# Use terminus multidev:list ${site_id} --fields=id,created --format=js to identify multidevs older than 30 days and delete them.
 	current_date=$(date +%s)
@@ -40,7 +40,7 @@ function delete_multidev() {
 
 		if (( created < threshold_date )); then
 			echo "Deleting multidev ${id} created on $(date -d @"$created")"
-			terminus multidev:delete "${site_id}" "${id}" -y
+			terminus multidev:delete "${site_id}.${id}" -y
 		fi
 	done
 }
