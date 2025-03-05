@@ -70,7 +70,7 @@ update_drupal_core() {
     
     # Get the current installed Drupal version
     local current_version
-    current_version=$(terminus drush "${site_id}.dev" -- status drupal-version --format=list | cut -d. -f1)
+    current_version=$(terminus drush "${site_id}.dev" -- core:status --format=list --fields=drupal-version | cut -d. -f1)
 
     echo "Current Drupal version: ${current_version}"
 
