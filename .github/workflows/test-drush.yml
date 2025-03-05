@@ -10,7 +10,8 @@ on:
       - 'tls_checker*'
       - 'css/*'
       - 'js/*'
-      - 'bin/*'
+      - '.github/bin/*'
+      - '.github/workflows/test-drush.yml'
       - 'src/*'  
 
 permissions:
