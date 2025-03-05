@@ -84,6 +84,7 @@ update_drupal_core() {
         # Run Composer update for Drupal core
 		terminus composer "${site_id}.dev" -- remove drupal/core-recommended
         terminus composer "${site_id}.dev" -- require drupal/core:^10 --update-with-all-dependencies -W
+        terminus composer "${site_id}.dev" -- require drupal/core-recommended:^10 --update-with-all-dependencies -W
         
         # Rebuild caches after updating
         terminus drush "${site_id}.dev" -- cache:rebuild
