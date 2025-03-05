@@ -76,6 +76,17 @@ jobs:
           echo "COMMIT_MSG=${CLEAN_COMMIT_MSG}" >> $GITHUB_ENV
           echo "PR_NUMBER=${PR_NUMBER}" >> $GITHUB_ENV
 
+      - name: Setup environment variables
+        run: |
+          PHP_VERSION=${{ matrix.php-version }}
+          php_version=${PHP_VERSION//./}
+          if [[ $php_version == '83' ]]; then
+            SITE_ID="test-drupal-cms-tls-checker-83"
+          else
+            SITE_ID="test-drupal-tls-checker-${php_version}"
+          fi
+          echo "SITE_ID=${SITE_ID}" >> $GITHUB_ENV
+
       - name: Install SSH key
         uses: webfactory/ssh-agent@v0.9.0
         with:
@@ -97,6 +108,17 @@ jobs:
           UPSTREAM_NAME: ${{ matrix.php-version == '8.3' && 'drupal-cms-composer-managed' || 'drupal-10-composer-managed' }}
           PR_NUMBER: ${{ env.PR_NUMBER }}
         run: bash ${{ github.workspace }}/.github/bin/setup-test-env.sh        
+
+      - name: Update deployment status
+        uses: bobheadxi/deployments@v1
+        if: always()
+        with:
+          step: finish
+          token: ${{ github.token }}
+          status: ${{ job.status }}
+          ref: ${{ github.head_ref }}
+          env: pr-${{ env.PR_NUMBER }}-${{ env.SITE_ID }}.pantheonsite.io
+          env_url: https://pr-${{ env.PR_NUMBER }}-${{ env.SITE_ID }}.pantheonsite.io
 
       - name: Run Drush CLI tests
         env:
