@@ -6,6 +6,7 @@
 ![GitHub License](https://img.shields.io/github/license/jazzsequence/drupal_tls_checker)
 
 - Stable tag: 1.0.0
+- Contributors: [jazzsequence](https://github.com/jazzsequence)
 
 A scanner for outgoing HTTP requests in Drupal code to check TLS 1.2/1.3 compatibility.
 
