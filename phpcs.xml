@@ -4,6 +4,7 @@
   <arg name="extensions" value="php"/>
   <!--Exclude third party code.-->
   <exclude-pattern>./vendor/*</exclude-pattern>
+  <exclude-pattern>./.github/fixtures/*</exclude-pattern>
   <arg name="basepath" value="./"/>
   <arg name="colors"/>
   <arg name="parallel" value="8"/>

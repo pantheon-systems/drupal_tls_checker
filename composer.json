@@ -25,6 +25,10 @@
             "find . -type f -name '*.php' -not -path './vendor/*' -not -path './tests/*' -exec php -l {} \\;",
             "vendor/bin/phpcs ."
         ],
-        "phpcbf": "vendor/bin/phpcbf ."   
+        "phpcbf": "vendor/bin/phpcbf .",
+        "test:bats": [
+            "which bats > /dev/null 2>&1 || echo \"bats is not installed\"",
+            "$(which bats) .github/bin/test-drush.bats "
+        ]
     }
 }
