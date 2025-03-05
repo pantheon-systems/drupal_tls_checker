@@ -44,7 +44,7 @@ jobs:
         run: composer install --prefer-dist
 
       - name: Install bats
-        uses: bats-core/bats-action@2.0.0
+        uses: bats-core/bats-action@3.0.0
 
       - name: Install Terminus
         uses: pantheon-systems/terminus-github-actions@v1
