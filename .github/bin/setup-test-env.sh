@@ -78,6 +78,9 @@ update_drupal_core() {
 
     # Check if the version is below 11
     if [[ "$current_version" -lt 11 ]]; then
+		echo -e "${YELLOW}Updating Drush to 12...${RESET}"
+		terminus composer "${site_id}.dev" -- require drush/drush:^12 --update-with-all-dependencies -W
+
         echo -e "${YELLOW}Updating Drupal core to version 10...${RESET}"
         
         # Switch to SFTP mode if necessary
