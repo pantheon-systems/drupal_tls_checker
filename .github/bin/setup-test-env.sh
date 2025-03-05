@@ -66,6 +66,8 @@ clone_site() {
 }
 
 update_drupal_core() {
+		# Switch to Git mode and clear out any possible changes on the remote.
+	terminus connection:set "${site_id}.dev" git -y
     echo -e "${YELLOW}Checking Drupal core version...${RESET}"
     
     # Get the current installed Drupal version
@@ -76,9 +78,6 @@ update_drupal_core() {
 
     # Check if the version is below 11
     if [[ "$current_version" -lt 11 ]]; then
-		# Switch to Git mode and clear out any possible changes on the remote.
-		terminus connection:set "${site_id}.dev" git -y
-
         echo -e "${YELLOW}Updating Drupal core to version 10...${RESET}"
         
         # Switch to SFTP mode if necessary
