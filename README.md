@@ -1,9 +1,9 @@
 # Drupal TLS Compatibility Checker
 
 [![Unofficial Support](https://img.shields.io/badge/Pantheon-Unofficial_Support-yellow?logo=pantheon&color=FFDC28)](https://docs.pantheon.io/oss-support-levels#unofficial-support)
-[![Lint](https://github.com/jazzsequence/drupal_tls_checker/actions/workflows/lint.yml/badge.svg)](https://github.com/jazzsequence/drupal_tls_checker/actions/workflows/lint.yml)
-![GitHub Release](https://img.shields.io/github/v/release/jazzsequence/drupal_tls_checker)
-![GitHub License](https://img.shields.io/github/license/jazzsequence/drupal_tls_checker)
+[![Lint](https://github.com/pantheon-systems/drupal_tls_checker/actions/workflows/lint.yml/badge.svg)](https://github.com/pantheon-systems/drupal_tls_checker/actions/workflows/lint.yml)
+![GitHub Release](https://img.shields.io/github/v/release/pantheon-systems/drupal_tls_checker)
+![GitHub License](https://img.shields.io/github/license/pantheon-systems/drupal_tls_checker)
 
 Stable tag: 1.0.0  
 Contributors: [jazzsequence](https://github.com/jazzsequence)
@@ -17,12 +17,12 @@ A scanner for outgoing HTTP requests in Drupal code to check TLS 1.2/1.3 compati
 ### Via Composer
 
 ```bash
-composer require jazzsequence/drupal_tls_checker
+composer require pantheon-systems/drupal_tls_checker
 ```
 
 ### Manual Installation
 
-1. Download the module from the [GitHub repository](https://github.com/jazzsequence/drupal_tls_checker).
+1. Download the module from the [GitHub repository](https://github.com/pantheon-systems/drupal_tls_checker/releases).
 2. Extract the downloaded archive.
 3. Upload the extracted folder to the `modules/custom` directory of your Drupal installation.
 4. Navigate to the **Extend** page in your Drupal admin panel (`/admin/modules`).
