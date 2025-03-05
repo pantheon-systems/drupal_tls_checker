@@ -28,7 +28,7 @@ composer require jazzsequence/drupal_tls_checker
 
 There are two ways to use the TLS Checker: via the Drupal admin or via Drush. The module adds a TLS Compatibility Checker page to `/admin/config/development/tls-checker`. This page allows you to run a TLS scan on your site against `/modules` and `/themes` and all subdirectories (including `/contrib` and `/custom`). When the scan is complete, a list of URLs that are not compatible with TLS 1.2 or higher will be displayed.
 
-<!-- add screenshot here -->
+![TLS Compatibility Checker scan](./.github/drupal_tls_checker_scan.png)
 
 You can also run the scan using the [Drush command described below](#drush-commands). 
 
