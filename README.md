@@ -1,6 +1,7 @@
 # Drupal TLS Compatibility Checker
 
 [![Unofficial Support](https://img.shields.io/badge/Pantheon-Unofficial_Support-yellow?logo=pantheon&color=FFDC28)](https://docs.pantheon.io/oss-support-levels#unofficial-support)
+[![Test Drush CLI](https://github.com/pantheon-systems/drupal_tls_checker/actions/workflows/test-drush.yml/badge.svg)](https://github.com/pantheon-systems/drupal_tls_checker/actions/workflows/test-drush.yml)
 [![Lint](https://github.com/pantheon-systems/drupal_tls_checker/actions/workflows/lint.yml/badge.svg)](https://github.com/pantheon-systems/drupal_tls_checker/actions/workflows/lint.yml)
 ![GitHub Release](https://img.shields.io/github/v/release/pantheon-systems/drupal_tls_checker)
 ![GitHub License](https://img.shields.io/github/license/pantheon-systems/drupal_tls_checker)
