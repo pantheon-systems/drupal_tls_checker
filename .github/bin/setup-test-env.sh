@@ -82,7 +82,8 @@ update_drupal_core() {
         terminus connection:set "${site_id}.dev" sftp -y
         
         # Run Composer update for Drupal core
-        terminus composer "${site_id}.dev" -- require drupal/core:^10 --update-with-dependencies
+		terminus composer "${site_id}.dev" -- remove drupal/core-recommended
+        terminus composer "${site_id}.dev" -- require drupal/core:^10 --update-with-all-dependencies -W
         
         # Rebuild caches after updating
         terminus drush "${site_id}.dev" -- cache:rebuild
