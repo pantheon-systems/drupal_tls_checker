@@ -107,7 +107,6 @@ set_multidev() {
 	echo ""
 	echo -e "${YELLOW}Set the multidev to test on based on the PR number passed in from CI."
 
-
 	# Check if multidev exists, create if it does not.
 	local multidevs
 	multidevs="$(terminus multidev:list "${site_id}" --fields=id --format=list)"
