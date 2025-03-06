@@ -8,8 +8,6 @@ on:
       - ready_for_review
     paths:
       - 'tls_checker*'
-      - 'css/*'
-      - 'js/*'
       - '.github/bin/*'
       - '.github/workflows/test-drush.yml'
       - 'src/*'  
