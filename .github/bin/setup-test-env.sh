@@ -163,7 +163,7 @@ copy_bad_module() {
 
 copy_pr_updates() {
 	echo "Commit message: ${commit_msg}"
-	cd ~/pantheon-local-copies/"${site_id}/web/modules/custom"
+	cd ~/pantheon-local-copies/"${site_id}"/web/modules/custom
 	echo -e "${YELLOW}Copying latest changes to TLS Checker and committing to the site.${RESET}"
 	mkdir -p tls_checker && cd tls_checker
 	rsync -a --exclude=".git" "${workspace}/" .
