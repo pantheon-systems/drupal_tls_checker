@@ -1,0 +1,13 @@
+# Managed by github-terraform — do not edit manually
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: "drupal_tls_checker"
+  description: "drupal_tls_checker"
+  annotations:
+    "backstage.io/techdocs-ref": "dir:docs/"
+spec:
+  type: "unknown"
+  lifecycle: "experimental"
+  owner: "site-experience"
