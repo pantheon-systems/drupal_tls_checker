@@ -31,7 +31,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php-version}}
+          php-version: '8.3'
 
       - name: Cache Composer dependencies
         id: composer-cache
@@ -56,7 +56,6 @@ jobs:
         uses: pantheon-systems/terminus-github-actions@v1
         with:
           pantheon-machine-token: ${{ secrets.PANTHEON_MACHINE_TOKEN }}
-          terminus-version: ${{ matrix.php-version == '8.1' && '3.6.2' || '' }}
 
       - name: Install Terminus Composer plugin
         run: |
