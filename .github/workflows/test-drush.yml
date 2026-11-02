@@ -106,7 +106,7 @@ jobs:
           COMMIT_MSG: ${{ env.COMMIT_MSG }}
           WORKSPACE: ${{ github.workspace }}
           PHP_VERSION: ${{ matrix.php-version }}
-          UPSTREAM_NAME: ${{ matrix.php-version == '8.4' && 'drupal-10-composer-managed' || 'drupal-cms-composer-managed' }}
+          UPSTREAM_NAME: ${{ matrix.php-version == '8.4' && 'drupal-10-composer-managed' || matrix.php-version == '8.5' && 'drupal-11-composer-managed' || 'drupal-cms-composer-managed' }}
           PR_NUMBER: ${{ env.PR_NUMBER }}
         run: bash ${{ github.workspace }}/.github/bin/setup-test-env.sh        
 
