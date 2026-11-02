@@ -145,7 +145,8 @@ update_pantheon_php_version() {
 
 	# Check if a php_version line exists
 	if grep -q "^php_version:" "$yml_file"; then
-		echo -e "php_version found in pantheon.yml."
+		echo -e "${YELLOW}Setting php_version to ${php_version_with_dot} in pantheon.yml.${RESET}"
+		sed -i "s/^php_version:.*/php_version: ${php_version_with_dot}/" "$yml_file"
 	else
 		echo -e "${YELLOW}Adding php_version to pantheon.yml.${RESET}"
 		echo "php_version: ${php_version_with_dot}" >> "$yml_file"
