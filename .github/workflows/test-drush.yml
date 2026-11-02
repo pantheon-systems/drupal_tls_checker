@@ -23,7 +23,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php-version: ['8.1', '8.2', '8.3']
+        php-version: ['8.3', '8.4', '8.5']
 
     steps:
       - uses: actions/checkout@v7
@@ -31,7 +31,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.3'
+          php-version: ${{ matrix.php-version }}
 
       - name: Cache Composer dependencies
         id: composer-cache
@@ -106,7 +106,7 @@ jobs:
           COMMIT_MSG: ${{ env.COMMIT_MSG }}
           WORKSPACE: ${{ github.workspace }}
           PHP_VERSION: ${{ matrix.php-version }}
-          UPSTREAM_NAME: ${{ matrix.php-version == '8.3' && 'drupal-cms-composer-managed' || 'drupal-10-composer-managed' }}
+          UPSTREAM_NAME: ${{ matrix.php-version == '8.4' && 'drupal-10-composer-managed' || 'drupal-cms-composer-managed' }}
           PR_NUMBER: ${{ env.PR_NUMBER }}
         run: bash ${{ github.workspace }}/.github/bin/setup-test-env.sh        
 
