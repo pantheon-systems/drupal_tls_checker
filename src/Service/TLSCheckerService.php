@@ -5,6 +5,7 @@ namespace Drupal\tls_checker\Service;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
 
 /**
@@ -141,6 +142,17 @@ class TLSCheckerService {
       $statusCode = $response->getStatusCode();
       // Consider anything below 400 as reachable.
       return $statusCode < 400;
+    }
+    catch (ConnectException $e) {
+      // TLS handshake failure (cURL 35): let the TLS check flag it.
+      if (($e->getHandlerContext()['errno'] ?? NULL) === 35) {
+        return TRUE;
+      }
+      $this->logger->debug('URL not reachable: @url. @message', [
+        '@url' => $url,
+        '@message' => $e->getMessage(),
+      ]);
+      return FALSE;
     }
     catch (RequestException $e) {
       $this->logger->debug('URL not reachable: @url. @message', [
