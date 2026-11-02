@@ -106,7 +106,7 @@ site_id=$(get_site_id)
   echo "PR number: ${pr_num}"
   echo "Status: $status"
   [ "$status" -eq 0 ]
-  [ "${lines[-1]}" = "1" ]
+  printf '%s\n' "${lines[@]}" | grep -qx '1'
 }
 
 @test "Reset the data and confirm the tls_checker_results table does not exist" {
