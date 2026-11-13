@@ -100,13 +100,13 @@ site_id=$(get_site_id)
 }
 
 @test "Check if tls_checker_results table contains failing URL" {
-  run terminus drush "${site_id}.pr-${pr_num}" -- sqlq "SELECT * FROM tls_checker_results WHERE url = 'tls-v1-1.badssl.com:1011' AND status = 'failing';"
+  run terminus drush "${site_id}.pr-${pr_num}" -- sqlq "SELECT COUNT(*) FROM tls_checker_results WHERE url = 'tls-v1-1.badssl.com:1011' AND status = 'failing';"
   echo "Output: $output"
   echo "Site ID: ${site_id}"
   echo "PR number: ${pr_num}"
   echo "Status: $status"
   [ "$status" -eq 0 ]
-  [[ "$output" == *"tls-v1-1.badssl.com:1011"* ]]
+  printf '%s\n' "${lines[@]}" | grep -qx '1'
 }
 
 @test "Reset the data and confirm the tls_checker_results table does not exist" {
