@@ -6,7 +6,7 @@
 ![GitHub Release](https://img.shields.io/github/v/release/pantheon-systems/drupal_tls_checker)
 ![GitHub License](https://img.shields.io/github/license/pantheon-systems/drupal_tls_checker)
 
-Stable tag: 1.0.0  
+Stable tag: 1.0.1  
 Contributors: [jazzsequence](https://github.com/jazzsequence)
 
 ---
